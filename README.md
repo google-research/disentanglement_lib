@@ -10,9 +10,8 @@ It supports a variety of different models, metrics and data sets:
 
 disentanglement_lib was created by Olivier Bachem and Francesco Locatello at Google Brain Zurich for the large-scale empirical study
 
-> **Challenging Common Assumptions in the Unsupervised Learning of Disentangled
-> Representations.** *Francesco Locatello, Stefan Bauer, Mario Lucic, Gunnar Rätsch, Sylvain
-> Gelly, Bernhard Schölkopf, Olivier Bachem*. arXiv preprint, 2018.
+> [**Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations.**](https://arxiv.org/abs/1811.12359)
+> *Francesco Locatello, Stefan Bauer, Mario Lucic, Gunnar Rätsch, Sylvain Gelly, Bernhard Schölkopf, Olivier Bachem*. arXiv preprint, 2018.
 
 The code is tested with Python 3 and is meant to be run on Linux systems (such as a [Google Cloud Deep Learning VM](https://cloud.google.com/deep-learning-vm/docs/)).
 It uses TensorFlow, Scipy, Numpy, Scikit-Learn, TFHub and Gin.
@@ -69,7 +68,7 @@ to your `.bashrc` file. If you choose not to set the environment variable `DISEN
 
 ### Reproducing prior experiments
 
-To fully train and evaluate one of the 12'600 models in the paper *Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations*, simply run
+To fully train and evaluate one of the 12'600 models in the paper [*Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations*](https://arxiv.org/abs/1811.12359), simply run
 
 ```
 dlib_reproduce --model_num=<?>
@@ -99,7 +98,7 @@ dlib_train --gin_config=examples/model.gin --model_dir=<model_output_directory>
 ```
 to train the model where `--model_dir` specifies where the results should be saved.
 
-To evaluate the newly trained model consistent with the evaluation protocol in the paper *Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations*, simply run
+To evaluate the newly trained model consistent with the evaluation protocol in the paper [*Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations*](https://arxiv.org/abs/1811.12359), simply run
 
 ```
 dlib_reproduce --model_dir=<model_output_directory> --output_directory=<output>
