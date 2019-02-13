@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+# coding=utf-8
+# Copyright 2018 The DisentanglementLib Authors.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Evaluation module for disentangled representations."""
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+import os
+from absl import app
+from absl import flags
+from disentanglement_lib.evaluation import evaluate
+from tensorflow import gfile
+
+FLAGS = flags.FLAGS
+
+flags.DEFINE_string("input_dir", None, "Directory to take trained "
+                    "representation from.")
+flags.DEFINE_string("output_dir", None, "Directory to save scores to.")
+flags.DEFINE_multi_string("gin_config", [],
+                          "List of paths to the config files.")
+flags.DEFINE_multi_string("gin_bindings", [],
+                          "Newline separated list of Gin parameter bindings.")
+flags.DEFINE_string("gin_evaluation_config_glob", None,
+                    "Path to glob pattern to evaluation configs.")
+flags.DEFINE_boolean("overwrite", False,
+                     "Whether to overwrite output directory.")
+
+
+def main(unused_argv):
+  # We either allow multiple scores to be computed via the
+  # gin_evaluation_config_glob flag or a single score via the gin_config and
+  # gin_bindings flags.
+  if FLAGS.gin_evaluation_config_glob is not None:
+    for gin_eval_config in sorted(gfile.Glob(FLAGS.gin_evaluation_config_glob)):
+      metric_name = os.path.basename(gin_eval_config).replace(".gin", "")
+      metric_dir = os.path.join(FLAGS.output_dir, metric_name)
+      gin_config_files = [gin_eval_config]
+      gin_bindings = [
+          "evaluation.name = '{}'".format(metric_name)
+      ]
+      evaluate.evaluate_with_gin(FLAGS.input_dir, metric_dir, FLAGS.overwrite,
+                                 gin_config_files, gin_bindings)
+  else:
+    evaluate.evaluate_with_gin(FLAGS.input_dir, FLAGS.output_dir,
+                               FLAGS.overwrite, FLAGS.gin_config,
+                               FLAGS.gin_bindings)
+
+
+if __name__ == "__main__":
+  app.run(main)

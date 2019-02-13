@@ -1,0 +1,39 @@
+# coding=utf-8
+# Copyright 2018 The DisentanglementLib Authors.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+model.batch_size = 64
+encoder.num_latent = 10
+model.model = @vae()
+dataset.name = "dsprites_full"
+vae.beta = 1.
+vae_optimizer.optimizer_fn = @vae/AdamOptimizer
+discriminator_optimizer.optimizer_fn = @discriminator/AdamOptimizer
+model.training_steps = 300000
+model.random_seed=0
+vae/AdamOptimizer.beta1 = 0.9
+vae/AdamOptimizer.beta2 = 0.999
+vae/AdamOptimizer.epsilon = 1e-08
+vae/AdamOptimizer.learning_rate = 0.0001
+vae/AdamOptimizer.name = 'Adam'
+vae/AdamOptimizer.use_locking = False
+discriminator/AdamOptimizer.beta1 = 0.5
+discriminator/AdamOptimizer.beta2 = 0.9
+discriminator/AdamOptimizer.epsilon = 1e-08
+discriminator/AdamOptimizer.name = 'Adam'
+discriminator/AdamOptimizer.use_locking = False
+discriminator/AdamOptimizer.learning_rate = 0.0001
+encoder.encoder_fn = @conv_encoder
+decoder.decoder_fn = @deconv_decoder
+reconstruction_loss.loss_fn = @bernoulli_loss

@@ -1,0 +1,34 @@
+# coding=utf-8
+# Copyright 2018 The DisentanglementLib Authors.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+dataset.name = "dsprites_full"
+model.batch_size = 64
+model.model = @vae()
+model.random_seed = 0
+vae.beta = 4
+encoder.num_latent = 10
+vae_optimizer.optimizer_fn = @AdamOptimizer
+# We train for only 5 steps, in practice we train for 300000 steps.
+model.training_steps = 5
+model.random_seed=0
+AdamOptimizer.beta1 = 0.9
+AdamOptimizer.beta2 = 0.999
+AdamOptimizer.epsilon = 1e-08
+AdamOptimizer.learning_rate = 0.0001
+AdamOptimizer.name = 'Adam'
+AdamOptimizer.use_locking = False
+encoder.encoder_fn = @conv_encoder
+decoder.decoder_fn = @deconv_decoder
+reconstruction_loss.loss_fn = @bernoulli_loss

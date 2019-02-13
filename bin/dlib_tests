@@ -1,0 +1,40 @@
+#!/bin/bash
+# coding=utf-8
+# Copyright 2018 The DisentanglementLib Authors.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Abort if one of the tests fails.
+set -e
+
+# We manually run all the tests.
+python -m disentanglement_lib.methods.shared.architectures_test
+python -m disentanglement_lib.methods.shared.optimizers_test
+python -m disentanglement_lib.methods.unsupervised.vae_test
+python -m disentanglement_lib.methods.unsupervised.train_test
+python -m disentanglement_lib.utils.convolute_hub_test
+python -m disentanglement_lib.utils.results_test
+python -m disentanglement_lib.postprocessing.postprocess_test
+python -m disentanglement_lib.data.ground_truth.util_test
+python -m disentanglement_lib.evaluation.evaluate_test
+python -m disentanglement_lib.evaluation.metrics.beta_vae_test
+python -m disentanglement_lib.evaluation.metrics.factor_vae_test
+python -m disentanglement_lib.evaluation.metrics.modularity_explicitness_test
+python -m disentanglement_lib.evaluation.metrics.mig_test
+python -m disentanglement_lib.evaluation.metrics.dci_test
+python -m disentanglement_lib.evaluation.metrics.sap_score_test
+python -m disentanglement_lib.evaluation.metrics.utils_test
+python -m disentanglement_lib.evaluation.metrics.unsupervised_metrics_test
+python -m disentanglement_lib.visualize.visualize_util_test
+python -m disentanglement_lib.visualize.visualize_dataset_test
+python -m disentanglement_lib.visualize.visualize_model_test
