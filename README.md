@@ -7,6 +7,7 @@ It supports a variety of different models, metrics and data sets:
 * *Models*: BetaVAE, FactorVAE, BetaTCVAE, DIP-VAE
 * *Metrics*: BetaVAE score, FactorVAE score, Mutual Information Gap, SAP score, DCI, MCE
 * *Data sets*: dSprites, Color/Noisy/Scream-dSprites, SmallNORB, Cars3D, and Shapes3D
+* It also includes 10'800 pretrained disentanglement models (see below for details).
 
 disentanglement_lib was created by Olivier Bachem and Francesco Locatello at Google Brain Zurich for the large-scale empirical study
 
@@ -109,7 +110,25 @@ Similarly, you might also want to look at `dlib_postprocess` and `dlib_evaluate`
 disentanglement_lib is easily extendible and can be used to implement new models and metrics related to disentangled representations.
 To get started, simply go through `examples/example.py` which shows you how to create your own disentanglement model and metric and how to benchmark them against existing models and metrics.
 
+## Pretrained disentanglement_lib modules
+Reproducing all the 12'600 models in the study [*Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations*](https://arxiv.org/abs/1811.12359) requires a substantial computational effort.
+To foster further research, **disentanglement_lib includes 10'800 pretrained disentanglement_lib modules** that correspond to the results of running `dlib_reproduce` with `--model_num=<?>` between 0 and 10'799 (the other models correspond to Shapes3D which is not publicly available).
+Each disentanglement_lib module contains the trained model (in the form of a TFHub module), the extracted representations (also as TFHub modules) and the recorded experimental results such as the different disentanglement scores (in JSON format).
+This makes it easy to compare new models to the pretrained ones and to compute new disentanglement metrics on the set of pretrained models.
 
+To access the 10'800 pretrained disentanglement_lib modules, you may download individual ones using the following link:
+
+```
+https://storage.googleapis.com/disentanglement_lib/unsupervised_study_v1/<?>.zip
+```
+where `<?>` corresponds to a model index between 0 and 10'799 ([example](https://storage.googleapis.com/disentanglement_lib/unsupervised_study_v1/0.zip)).
+
+Each ZIP file in the bucket corresponds to one run of `dlib_reproduce` with that model number.
+To learn more about the used configuration settings, look at the code in `disentanglement_lib/config/unsupervised_study_v1/sweep.py` or run:
+
+```
+dlib_reproduce --model_num=<?> --only_print
+```
 
 ## Frequently asked questions
 
