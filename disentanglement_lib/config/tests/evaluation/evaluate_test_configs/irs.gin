@@ -1,0 +1,7 @@
+evaluation.evaluation_fn = @irs
+dataset.name="dummy_data"
+evaluation.random_seed = 0
+irs.num_train=100
+irs.batch_size=16
+discretizer.num_bins=20
+discretizer.discretizer_fn=@histogram_discretizer
