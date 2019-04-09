@@ -22,6 +22,7 @@ import os
 from disentanglement_lib.data.ground_truth import named_data
 from disentanglement_lib.utils import results
 from disentanglement_lib.visualize import visualize_util
+from disentanglement_lib.visualize.visualize_irs import vis_all_interventional_effects
 import numpy as np
 from scipy import stats
 from six.moves import range
@@ -193,6 +194,14 @@ def visualize(model_dir,
         images.append(np.array(activation(_decoder(code))))
       filename = os.path.join(results_dir, "minmax_interval_cycle%d.gif" % i)
       visualize_util.save_animation(np.array(images), filename, fps)
+
+    # Interventional effects visualization
+    num_examples_interventional = 10000
+    factors = dataset.sample_factors(num_examples_interventional, random_state)
+    obs = dataset.sample_observations_from_factors(factors, random_state)
+    latents = f(dict(images=obs), signature="gaussian_encoder",
+                as_dict=True)["mean"]
+    vis_all_interventional_effects(factors, latents, output_dir)
 
   # Finally, we clear the gin config that we have set.
   gin.clear_config()
