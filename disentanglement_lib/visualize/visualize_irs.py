@@ -1,11 +1,11 @@
-"""
-Visualization code for Interventional Robustness Score
-Code adopted from the authors' original implementation
+# coding=utf-8
+
+"""Visualization code for Interventional Robustness Score
+Code adopted from the authors' original implementation:
 
 Suter, R., Miladinović, Đ., Bauer, S., & Schölkopf, B. (2018).
 Interventional Robustness of Deep Latent Variable Models.
 arXiv preprint arXiv:1811.00007.
-
 """
 import os
 
@@ -16,7 +16,7 @@ from disentanglement_lib.evaluation.metrics.irs import scalable_disentanglement_
 
 
 def vis_all_interventional_effects(g, z, output_dir):
-  """ Compute Matrix of all interventional effects """
+  """Compute Matrix of all interventional effects."""
   res = scalable_disentanglement_score(g, z)
   parents = res['parents']
   scores = res['disentanglement_scores']
@@ -42,9 +42,15 @@ def vis_all_interventional_effects(g, z, output_dir):
 
 
 def visualize_interventional_effect(g, z, l, i, j, no_conditioning=False,
-                                    ax=None, plot_legend=True, plot_scatter=True):
-  """ Compute single cell of interventional effects of Z_l given G_i and intervening on G_j
-    l: latent space
+                                    ax=None, plot_legend=True,
+                                    plot_scatter=True):
+  """Visualize single cell of interventional effects of z_l given g_i and
+  intervening on g_j.
+
+  Args
+    g: Generative factors
+    z: latent factors
+    l: latent dimension under consideration
     i: g_i which is being kept constant
     j: g_j which we intervene on
     no_conditioning: whether or not we should condition on i
@@ -67,7 +73,7 @@ def visualize_interventional_effect(g, z, l, i, j, no_conditioning=False,
   if plot_scatter:
     ax.scatter(g[:, j], z[:, l], c=cols)
 
-  # compute possible g_i and g_j
+  # Compute possible g_i and g_j
   if no_conditioning:
     E_for_j = np.empty([g_js.shape[0]])
     median_for_j = np.empty([g_js.shape[0]])
@@ -85,14 +91,15 @@ def visualize_interventional_effect(g, z, l, i, j, no_conditioning=False,
     ax.set_xlabel('g_{}'.format(j))
     ax.legend()
   else:
-    E_given_i_for_j = np.empty(
-      [g_is.shape[0], g_js.shape[0]])  # compute E[Z_l | g_i, g_j] as a function of g_j for each g_i
+    # Compute E[Z_l | g_i, g_j] as a function of g_j for each g_i
+    E_given_i_for_j = np.empty([g_is.shape[0], g_js.shape[0]])
     for i_idx in range(g_is.shape[0]):
       for j_idx in range(g_js.shape[0]):
         match = (g[:, [i, j]] == [g_is[i_idx], g_js[j_idx]]).all(axis=1)
         E_given_i_for_j[i_idx, j_idx] = np.mean(z[match, l])
-      ax.plot(g_js, E_given_i_for_j[i_idx, :], 'go--', c=colors[i_idx], label='g_{}=={}'.format(i, g_is[i_idx]),
-              linewidth=1.5, markersize=3)
+      ax.plot(g_js, E_given_i_for_j[i_idx, :], 'go--', c=colors[i_idx],
+              label='g_{}=={}'.format(i, g_is[i_idx]), linewidth=1.5,
+              markersize=3)
 
     ax.set_xlabel('int. g_{}'.format(j))
     ax.set_ylabel('E[z_{}|g_{}, g_{}]'.format(l, i, j))

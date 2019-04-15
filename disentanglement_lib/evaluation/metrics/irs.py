@@ -1,7 +1,6 @@
 # coding=utf-8
 
-"""
-Interventional Robustness Score
+"""Interventional Robustness Score.
 Code adopted from the authors' original implementation
 
 Suter, R., Miladinović, Đ., Bauer, S., & Schölkopf, B. (2018).
@@ -27,7 +26,8 @@ def compute_irs(ground_truth_data,
                 diff_quantile=0.99,
                 num_train=gin.REQUIRED,
                 batch_size=gin.REQUIRED):
-  """ Computes the Interventional Robustness Score
+  """Computes the Interventional Robustness Score.
+
   Args:
     ground_truth_data: GroundTruthData to be sampled from.
     representation_function: Function that takes observations as input and
@@ -61,8 +61,7 @@ def compute_irs(ground_truth_data,
 
 
 def _drop_constant_dims(ys):
-  """ Returns a view of the matrix `ys` with dropped constant rows
-  """
+  """Returns a view of the matrix `ys` with dropped constant rows."""
   ys = np.asarray(ys)
   if ys.ndim != 2:
     raise ValueError('Expecting a matrix')
@@ -73,15 +72,20 @@ def _drop_constant_dims(ys):
 
 
 def scalable_disentanglement_score(g, z, diff_quantile=0.99):
-  """ Compute IRS scores on a dataset without noise in X and crossed generative
-  factors (i.e. one sample per combination of g)
-  assume each g_i is an equally probable realization of g_i and all g_i are
-  independent
+  """Computes IRS scores on a dataset without noise in X and crossed generative
+  factors (i.e. one sample per combination of g).
+  Assumes each g_i is an equally probable realization of g_i and all g_i are
+  independent.
 
-  :param g: np.ndarray of shape (num samples, num generative factors),
+  Args:
+    g: Numpy array of shape (num samples, num generative factors),
             matrix of ground truth generative factors
-  :param z: np.ndarray of shape (num samples, num latent dimensions),
+    z: Numpy array of shape (num samples, num latent dimensions),
             matrix of latent variables
+    diff_quantile: float value between 0 and 1 to decide what quantile of diffs
+            to select (use 1.0 for the version in the paper)
+  Returns:
+    Dictionary with IRS scores
   """
   num_gen = g.shape[1]
   num_lat = z.shape[1]
