@@ -52,24 +52,33 @@ def compute_downstream_task(ground_truth_data,
   Returns:
     Dictionary with scores.
   """
+  # Initialize the empty dictionary for the scores
   scores = {}
+  # Compute the 'fair' representation and test it for different sizes of the
+  # training 'batch', specified by gin
   for train_size in num_train:
+    # Get the means and the exact factors for a training and a test batch
     mus_train, ys_train = utils.generate_batch_factor_code(
       ground_truth_data, representation_function, train_size, random_state,
       batch_size)
     mus_test, ys_test = utils.generate_batch_factor_code(
       ground_truth_data, representation_function, num_test, random_state,
       batch_size)
+    # Compute the fair representation and test it for each factor of variation
     for sensitive_factor_index in range(ground_truth_data.num_factors):
+      # Compute the fair representation using the gin-specified correlation
+      # measure
       fair_mus_train, fair_mus_test =\
         fairness_utils.compute_fair_representation(mus_train, ys_train,
                                                    mus_test, ys_test,
                                                    sensitive_factor_index)
+      # Build the prediction model
       predictor_model = utils.make_predictor_fn()
-
-      train_err, test_err = _compute_loss(
+      # Compute the predictive loss
+      train_err, test_err = fairness_utils.compute_loss(
         np.transpose(fair_mus_train), ys_train, np.transpose(fair_mus_test),
         ys_test, predictor_model)
+      # Save the scores (accuracies) in the score dictionary
       size_string = str(train_size)
       scores[size_string +
              ":mean_train_accuracy_removed_{}".format(
@@ -90,16 +99,3 @@ def compute_downstream_task(ground_truth_data,
                  i, sensitive_factor_index)] = test_err[i]
 
   return scores
-
-
-def _compute_loss(x_train, y_train, x_test, y_test, predictor_fn):
-  """Compute average accuracy for train and test set."""
-  num_factors = y_train.shape[0]
-  train_loss = []
-  test_loss = []
-  for i in range(num_factors):
-    model = predictor_fn()
-    model.fit(x_train, y_train[i, :])
-    train_loss.append(np.mean(model.predict(x_train) == y_train[i, :]))
-    test_loss.append(np.mean(model.predict(x_test) == y_test[i, :]))
-  return train_loss, test_loss
