@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # coding=utf-8
 # Copyright 2018 The DisentanglementLib Authors.  All rights reserved.
 #
@@ -58,6 +57,7 @@ def compute_fair_representation(mus_train, ys_train, mus_test, ys_test,
                                        axis=0)
   return fair_representation_train, fair_representation_test
 
+
 @gin.configurable("factorwise_dci",
                   blacklist=["mus_train", "ys_train", "mus_test", "ys_test"])
 def compute_factorwise_dci(mus_train, ys_train, mus_test, ys_test):
@@ -78,6 +78,7 @@ def compute_factorwise_dci(mus_train, ys_train, mus_test, ys_test):
   assert importance_matrix.shape[1] == ys_train.shape[0]
   return importance_matrix
 
+
 @gin.configurable("factorwise_mig",
                   blacklist=["mus_train", "ys_train", "mus_test", "ys_test"])
 def compute_factorwise_mig(mus_train, ys_train, mus_test, ys_test):
@@ -93,6 +94,7 @@ def compute_factorwise_mig(mus_train, ys_train, mus_test, ys_test):
   discretized_mus = utils.make_discretizer(mus_train)
   m = utils.discrete_mutual_info(discretized_mus, ys_train)
   return m
+
 
 def compute_loss(x_train, y_train, x_test, y_test, predictor_fn):
   """Compute average predictive accuracy for train and test set.
