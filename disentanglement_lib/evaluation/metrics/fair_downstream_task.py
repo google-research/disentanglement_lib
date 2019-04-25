@@ -52,12 +52,10 @@ def compute_downstream_task(ground_truth_data,
   Returns:
     Dictionary with scores.
   """
-  # Initialize the empty dictionary for the scores
   scores = {}
   # Compute the 'fair' representation and test it for different sizes of the
   # training 'batch', specified by gin
   for train_size in num_train:
-    # Get the means and the exact factors for a training and a test batch
     mus_train, ys_train = utils.generate_batch_factor_code(
       ground_truth_data, representation_function, train_size, random_state,
       batch_size)
@@ -66,15 +64,11 @@ def compute_downstream_task(ground_truth_data,
       batch_size)
     # Compute the fair representation and test it for each factor of variation
     for sensitive_factor_index in range(ground_truth_data.num_factors):
-      # Compute the fair representation using the gin-specified correlation
-      # measure
       fair_mus_train, fair_mus_test =\
         fairness_utils.compute_fair_representation(mus_train, ys_train,
                                                    mus_test, ys_test,
                                                    sensitive_factor_index)
-      # Build the prediction model
       predictor_model = utils.make_predictor_fn()
-      # Compute the predictive loss
       train_err, test_err = fairness_utils.compute_loss(
         np.transpose(fair_mus_train), ys_train, np.transpose(fair_mus_test),
         ys_test, predictor_model)

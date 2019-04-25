@@ -44,9 +44,7 @@ def compute_fair_representation(mus_train, ys_train, mus_test, ys_test,
   # gin_bindings
   importance_matrix = correlation_measure(mus_train, ys_train, mus_test,
                                           ys_test)
-  # Select the column corresponding to the sensitive factor
   sensitive_factor_importance = importance_matrix[:, sensitive_factor_index]
-  # Find the factor of variation to remove
   factor_to_remove_index = np.argmax(sensitive_factor_importance)
   # Remove the factor of variation above from the representation
   fair_representation_train = np.delete(mus_train.copy(),
@@ -61,8 +59,8 @@ def compute_fair_representation(mus_train, ys_train, mus_test, ys_test,
 @gin.configurable("factorwise_dci",
                   blacklist=["mus_train", "ys_train", "mus_test", "ys_test"])
 def compute_factorwise_dci(mus_train, ys_train, mus_test, ys_test):
-  """Computes importance of attributes using the importance matrix and returns
-  a numpy array containing the results.
+  """Computes importance of attributes using the DCI importance matrix and
+  returns a numpy array containing the results.
 
   Args:
     mus_train: latent means of the training batch.
@@ -70,8 +68,6 @@ def compute_factorwise_dci(mus_train, ys_train, mus_test, ys_test):
     mus_test: latent means of the test batch.
     ys_test: labels of the test batch.
   """
-  # Computes the importance matrix using Disentanglement, Completeness and
-  # Informativeness
   importance_matrix, _, _ = dci.compute_importance_gbt(
     mus_train, ys_train, mus_test, ys_test)
   assert importance_matrix.shape[0] == mus_train.shape[0]
