@@ -23,6 +23,7 @@ from disentanglement_lib.data.ground_truth import named_data
 from disentanglement_lib.evaluation.metrics import beta_vae  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import dci  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import downstream_task  # pylint: disable=unused-import
+from disentanglement_lib.evaluation.metrics import fair_downstream_task  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import factor_vae  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import mig  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import modularity_explicitness  # pylint: disable=unused-import
