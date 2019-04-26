@@ -21,9 +21,7 @@ fairness project. To be run as:
 
 The steps are:
 1) Download the model specified as argument of the script
-
-
-
+2) Evaluate on a fairness downstream task
 """
 
 # Imports
@@ -43,7 +41,7 @@ if not os.path.exists(base_path):
 
 # By default, we do not overwrite output directories. Set this to True, if you
 # want to overwrite (in particular, if you rerun this script several times).
-overwrite = False
+overwrite = True
 
 
 # 1. Model Download
@@ -60,6 +58,7 @@ if not (os.path.isfile(filename) or os.path.isdir(model_directory)):
   # Extract zip
   zip_extractor = ZipFile(filename)
   zip_extractor.extractall(base_path)
+os.remove(filename)
 
 
 # 2. Evaluate on a fairness downstream task
@@ -70,14 +69,15 @@ gin_bindings = [
   "predictor.predictor_fn = @gradient_boosting_classifier",
   "dataset.name='auto'",
   "evaluation.random_seed = 0",
-  "fair_downstream_task.num_train=[1000]",
+  "fair_downstream_task.num_train=[1000, 5000, 10000]",
   "fair_downstream_task.num_test=1000",
   "discretizer.discretizer_fn = @histogram_discretizer",
   "discretizer.num_bins = 20"
 ]
-overwrite = False
-result_path = os.path.join(model_directory, "metrics", "mean",
-                           "fair_downstream_task")
-representation_path = os.path.join(model_directory, "postprocessed", "mean")
-evaluate.evaluate_with_gin(
-  representation_path, result_path, overwrite, gin_bindings=gin_bindings)
+representation_strategy = ['mean', 'sampled']
+for strat in representation_strategy:
+  result_path = os.path.join(model_directory, "metrics", strat,
+                             "fair_downstream_task")
+  representation_path = os.path.join(model_directory, "postprocessed", strat)
+  evaluate.evaluate_with_gin(
+    representation_path, result_path, overwrite, gin_bindings=gin_bindings)
