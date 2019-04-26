@@ -56,9 +56,7 @@ if os.path.isfile(filename) and not os.path.isdir(model_directory):
   zip_extractor = ZipFile(filename)
   zip_extractor.extractall(base_path)
   os.remove(filename)
-if not os.path.isfile(filename) and os.path.isdir(model_directory):
-  continue
-else:
+if not os.path.isfile(filename) and not os.path.isdir(model_directory):
   print("Model file (.zip) and folder not present")
 
 
