@@ -12,7 +12,7 @@ export PYTHONPATH="${PYTHONPATH}:/cluster/home/gabbati/disentanglement_lib/"
 # Loop on the realizations
 for n_run in `seq 0 999`;
 do
-    wget -O ../fairness_output/$n_run.zip 'https://storage.googleapis.com/disentanglement_lib/unsupervised_study_v1/$n_run.zip'
+    wget -O ../fairness_output/$n_run.zip "https://storage.googleapis.com/disentanglement_lib/unsupervised_study_v1/$n_run.zip"
     bsub -n 1 -W 04:00 -R "rusage[mem=8192]" python dlib_fairness_cluster $n_run
 done
 
