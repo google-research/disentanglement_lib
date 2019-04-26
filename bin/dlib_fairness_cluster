@@ -51,13 +51,14 @@ model_num = int(sys.argv[1])
 # Download model in current directory if not already present
 filename = os.path.join(base_path, str(model_num) + '.zip')
 model_directory = os.path.join(base_path, str(model_num))
-if os.path.isfile(filename) and not os.path.isdir(model_directory):
-  # Extract zip
-  zip_extractor = ZipFile(filename)
-  zip_extractor.extractall(base_path)
-  os.remove(filename)
-if not os.path.isfile(filename) and not os.path.isdir(model_directory):
-  print("Model file (.zip) and folder not present")
+if not os.path.isdir(model_directory):
+  if os.path.isfile(filename):
+    # Extract zip
+    zip_extractor = ZipFile(filename)
+    zip_extractor.extractall(base_path)
+    os.remove(filename)
+  else:
+    print("Model file (.zip) and folder not present")
 
 
 # 2. Evaluate on a fairness downstream task
