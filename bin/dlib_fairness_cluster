@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+# coding=utf-8
+# Copyright 2018 The DisentanglementLib Authors.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Test script for the new functionalities of disentanglement_lib for the
+fairness project. To be run as:
+
+>> python fairness_test.py <model_num>
+
+The steps are:
+1) Download the model specified as argument of the script
+2) Evaluate on a fairness downstream task
+"""
+
+# Imports
+import urllib.request
+import sys
+import os
+from zipfile import ZipFile
+from disentanglement_lib.evaluation import evaluate
+
+
+# 0. Settings
+# ------------------------------------------------------------------------------
+# By default, we save all the results in subdirectories of the following path.
+base_path = "../fairness_output"
+if not os.path.exists(base_path):
+    os.makedirs(base_path)
+
+# By default, we do not overwrite output directories. Set this to True, if you
+# want to overwrite (in particular, if you rerun this script several times).
+overwrite = True
+
+
+# 1. Model Download
+# ------------------------------------------------------------------------------
+# Retrieve model number and build the URL
+model_num = int(sys.argv[1])
+# Download model in current directory if not already present
+filename = os.path.join(base_path, str(model_num) + '.zip')
+model_directory = os.path.join(base_path, str(model_num))
+if os.path.isfile(filename) and not os.path.isdir(model_directory):
+  # Extract zip
+  zip_extractor = ZipFile(filename)
+  zip_extractor.extractall(base_path)
+  os.remove(filename)
+if not os.path.isfile(filename) and os.path.isdir(model_directory):
+  continue
+else:
+  print("Model file (.zip) and folder not present")
+
+
+# 2. Evaluate on a fairness downstream task
+# ------------------------------------------------------------------------------
+gin_bindings = [
+  "evaluation.evaluation_fn = @fair_downstream_task",
+  "fair_representation.correlation_measure = @factorwise_dci",
+  "predictor.predictor_fn = @gradient_boosting_classifier",
+  "dataset.name='auto'",
+  "evaluation.random_seed = 0",
+  "fair_downstream_task.num_train=[1000, 5000, 10000]",
+  "fair_downstream_task.num_test=1000",
+  "discretizer.discretizer_fn = @histogram_discretizer",
+  "discretizer.num_bins = 20"
+]
+representation_strategy = ['mean', 'sampled']
+for strat in representation_strategy:
+  result_path = os.path.join(model_directory, "metrics", strat,
+                             "fair_downstream_task")
+  representation_path = os.path.join(model_directory, "postprocessed", strat)
+  evaluate.evaluate_with_gin(
+    representation_path, result_path, overwrite, gin_bindings=gin_bindings)
