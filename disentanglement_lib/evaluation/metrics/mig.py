@@ -45,12 +45,17 @@ def compute_mig(ground_truth_data,
   Returns:
     Dict with average mutual information gap.
   """
-  score_dict = {}
   logging.info("Generating training set.")
   mus_train, ys_train = utils.generate_batch_factor_code(
       ground_truth_data, representation_function, num_train,
       random_state, batch_size)
   assert mus_train.shape[1] == num_train
+  return _compute_mig(mus_train, ys_train)
+
+
+def _compute_mig(mus_train, ys_train):
+  """Computes score based on both training and testing codes and factors."""
+  score_dict = {}
   discretized_mus = utils.make_discretizer(mus_train)
   m = utils.discrete_mutual_info(discretized_mus, ys_train)
   assert m.shape[0] == mus_train.shape[0]
@@ -61,3 +66,5 @@ def compute_mig(ground_truth_data,
   score_dict["discrete_mig"] = np.mean(
       np.divide(sorted_m[0, :] - sorted_m[1, :], entropy[:]))
   return score_dict
+
+

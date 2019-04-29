@@ -52,7 +52,6 @@ def compute_dci(ground_truth_data, representation_function, random_state,
     Dictionary with average disentanglement score, completeness and
       informativeness (train and test).
   """
-  scores = {}
   logging.info("Generating training set.")
   # mus_train are of shape [num_codes, num_train], while ys_train are of shape
   # [num_factors, num_train].
@@ -64,6 +63,13 @@ def compute_dci(ground_truth_data, representation_function, random_state,
   mus_test, ys_test = utils.generate_batch_factor_code(
       ground_truth_data, representation_function, num_test,
       random_state, batch_size)
+  scores = _compute_dci(mus_train, ys_train, mus_test, ys_test)
+  return scores
+
+
+def _compute_dci(mus_train, ys_train, mus_test, ys_test):
+  """Computes score based on both training and testing codes and factors."""
+  scores = {}
   importance_matrix, train_err, test_err = compute_importance_gbt(
       mus_train, ys_train, mus_test, ys_test)
   assert importance_matrix.shape[0] == mus_train.shape[0]
@@ -73,6 +79,8 @@ def compute_dci(ground_truth_data, representation_function, random_state,
   scores["disentanglement"] = disentanglement(importance_matrix)
   scores["completeness"] = completeness(importance_matrix)
   return scores
+
+
 
 
 def compute_importance_gbt(x_train, y_train, x_test, y_test):

@@ -62,6 +62,11 @@ def compute_sap(ground_truth_data,
       ground_truth_data, representation_function, num_test,
       random_state, batch_size)
   logging.info("Computing score matrix.")
+  return _compute_sap(mus, ys, mus_test, ys_test, continuous_factors)
+
+
+def _compute_sap(mus, ys, mus_test, ys_test, continuous_factors):
+  """Computes score based on both training and testing codes and factors."""
   score_matrix = _compute_score_matrix(mus, ys, mus_test,
                                        ys_test, continuous_factors)
   # Score matrix should have shape [num_latents, num_factors].
@@ -72,6 +77,8 @@ def compute_sap(ground_truth_data,
   logging.info("SAP score: %.2g", scores_dict["SAP_score"])
 
   return scores_dict
+
+
 
 
 def _compute_score_matrix(mus, ys, mus_test, ys_test, continuous_factors):

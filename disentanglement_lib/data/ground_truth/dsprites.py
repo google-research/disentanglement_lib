@@ -59,7 +59,7 @@ class DSprites(ground_truth_data.GroundTruthData):
     # Load the data so that we can sample from it.
     with gfile.Open(DSPRITES_PATH, "rb") as data_file:
       # Data was saved originally using python2, so we need to set the encoding.
-      data = np.load(data_file, encoding="latin1")
+      data = np.load(data_file, encoding="latin1", allow_pickle=True)
       self.images = np.array(data["imgs"])
       self.factor_sizes = np.array(
           data["metadata"][()]["latents_sizes"], dtype=np.int64)

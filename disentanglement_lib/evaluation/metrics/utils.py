@@ -61,6 +61,32 @@ def generate_batch_factor_code(ground_truth_data, representation_function,
   return np.transpose(representations), np.transpose(factors)
 
 
+def split_train_test(observations, train_percentage):
+  """Splits observations into a train and test set.
+
+  Args:
+    observations: Observations to split in train and test. They can be the
+      representation or the observed factors of variation. The shape is
+      (num_dimensions, num_points) and the split is over the points.
+    train_percentage: Fraction of observations to be used for training.
+
+  Returns:
+    observations_train: Observations to be used for training.
+    observations_test: Observations to be used for testing.
+  """
+  num_labelled_samples = observations.shape[1]
+  num_labelled_samples_train = int(
+      np.ceil(num_labelled_samples * train_percentage))
+  num_labelled_samples_test = num_labelled_samples - num_labelled_samples_train
+  observations_train = observations[:, :num_labelled_samples_train]
+  observations_test = observations[:, num_labelled_samples_train:]
+  assert observations_test.shape[1] == num_labelled_samples_test, \
+      "Wrong size of the test set."
+  return observations_train, observations_test
+
+
+
+
 def discrete_mutual_info(mus, ys):
   """Compute discrete mutual information."""
   num_codes = mus.shape[0]

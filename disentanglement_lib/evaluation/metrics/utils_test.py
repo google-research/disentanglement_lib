@@ -45,6 +45,13 @@ class UtilsTest(absltest.TestCase):
     shouldbe = np.array([[np.log(2), 0.], [0., np.log(2)]])
     np.testing.assert_allclose(result, shouldbe)
 
+  def test_split_train_test(self):
+    xs = np.zeros([10, 100])
+    xs_train, xs_test = utils.split_train_test(xs, 0.9)
+    shouldbe_train = np.zeros([10, 90])
+    shouldbe_test = np.zeros([10, 10])
+    np.testing.assert_allclose(xs_train, shouldbe_train)
+    np.testing.assert_allclose(xs_test, shouldbe_test)
 
 if __name__ == '__main__':
   absltest.main()

@@ -423,10 +423,10 @@ class BetaTCVAE(BaseVAE):
   def __init__(self, beta=gin.REQUIRED):
     """Creates a beta-TC-VAE model.
 
-    Based on Equation 5 with alpha = gamma = 1 of "Isolating Sources of
+    Based on Equation 4 with alpha = gamma = 1 of "Isolating Sources of
     Disentanglement in Variational Autoencoders"
     (https://arxiv.org/pdf/1802.04942).
-    If alpha = gamma = 1, Eq. 5 can be written as ELBO + (1 - beta) * TC.
+    If alpha = gamma = 1, Eq. 4 can be written as ELBO + (1 - beta) * TC.
 
     Args:
       beta: Hyperparameter total correlation.
