@@ -201,7 +201,8 @@ def visualize(model_dir,
     obs = dataset.sample_observations_from_factors(factors, random_state)
     latents = f(dict(images=obs), signature="gaussian_encoder",
                 as_dict=True)["mean"]
-    vis_all_interventional_effects(factors, latents, output_dir)
+    results_dir = os.path.join(output_dir, "interventional_effects")
+    vis_all_interventional_effects(factors, latents, results_dir)
 
   # Finally, we clear the gin config that we have set.
   gin.clear_config()
