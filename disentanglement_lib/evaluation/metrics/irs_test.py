@@ -40,7 +40,7 @@ class IrsTest(absltest.TestCase):
       ground_truth_data, representation_function, random_state, 0.99, 3000, 3000)
     self.assertBetween(scores["IRS"], 0.0, 0.1)
 
-  def test__drop_constant_dims(self):
+  def test_drop_constant_dims(self):
     random_state = np.random.RandomState(0)
     ys = random_state.normal(0.0, 1.0, (100, 100))
     ys[0, :] = 1.
