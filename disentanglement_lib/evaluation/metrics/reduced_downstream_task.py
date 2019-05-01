@@ -15,7 +15,8 @@
 
 """Reduced downstream classification task.
 
-Another kind of downstream task. DCI without the best performing feature.
+Test downstream performance after removing the most predictive feature for each
+factor of variation.
 """
 
 from __future__ import absolute_import
@@ -37,8 +38,10 @@ def compute_reduced_downstream_task(ground_truth_data,
                                     num_train=gin.REQUIRED,
                                     num_test=gin.REQUIRED,
                                     batch_size=16):
-  """Computes loss of a reduced downstream task, in order to measure the
-  information leakage in each latent component.
+  """Computes loss of a reduced downstream task.
+
+  Measure the information leakage in each latent component after removing the
+  most informative feature for the prediction task.
 
   Args:
     ground_truth_data: GroundTruthData to be sampled from.
@@ -87,9 +90,9 @@ def compute_reduced_downstream_task(ground_truth_data,
 def compute_reduced_representation(mus_train, ys_train, mus_test, ys_test,
                                    factor_of_interest,
                                    correlation_measure=gin.REQUIRED):
-  """Computes a reduced representation of the data. In this particular case,
-  we take out the factor that is the most informative with respect to the factor
-  corresponding to factor_of_interest.
+  """Compute a reduced representation of the data.
+
+  The most informative factor with respect to the labels is deleted.
 
   Args:
     mus_train: latent means of the training batch.
@@ -116,8 +119,7 @@ def compute_reduced_representation(mus_train, ys_train, mus_test, ys_test,
 @gin.configurable("factorwise_dci",
                   blacklist=["mus_train", "ys_train", "mus_test", "ys_test"])
 def compute_factorwise_dci(mus_train, ys_train, mus_test, ys_test):
-  """Computes importance of attributes using the DCI importance matrix and
-  returns a numpy array containing the results.
+  """Compute the DCI importance matrix of the attributes.
 
   Args:
     mus_train: latent means of the training batch.
