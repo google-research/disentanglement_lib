@@ -14,14 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Test script for the new functionalities of disentanglement_lib for the
-fairness project. To be run as:
+"""Test script for the evaluation based on a downstream task with reduced
+representation evaluation. To be run as:
 
->> python fairness_test.py <model_num>
+>> python dlib_reduced.py <model_num>
 
 The steps are:
 1) Download the model specified as argument of the script
-2) Evaluate on a fairness downstream task
+2) Evaluate on the downstream task with reduced representation
 """
 
 # Imports
@@ -35,7 +35,7 @@ from disentanglement_lib.evaluation import evaluate
 # 0. Settings
 # ------------------------------------------------------------------------------
 # By default, we save all the results in subdirectories of the following path.
-base_path = "../fairness_output"
+base_path = "../reduced_representation_output"
 if not os.path.exists(base_path):
     os.makedirs(base_path)
 
@@ -61,23 +61,23 @@ if not (os.path.isfile(filename) or os.path.isdir(model_directory)):
 os.remove(filename)
 
 
-# 2. Evaluate on a fairness downstream task
+# 2. Evaluate on a reduced downstream task
 # ------------------------------------------------------------------------------
 gin_bindings = [
-  "evaluation.evaluation_fn = @fair_downstream_task",
-  "fair_representation.correlation_measure = @factorwise_dci",
+  "evaluation.evaluation_fn = @reduced_downstream_task",
+  "reduced_representation.correlation_measure = @factorwise_dci",
   "predictor.predictor_fn = @gradient_boosting_classifier",
   "dataset.name='auto'",
   "evaluation.random_seed = 0",
-  "fair_downstream_task.num_train=[1000, 5000, 10000]",
-  "fair_downstream_task.num_test=1000",
+  "reduced_downstream_task.num_train=[1000, 5000, 10000]",
+  "reduced_downstream_task.num_test=1000",
   "discretizer.discretizer_fn = @histogram_discretizer",
   "discretizer.num_bins = 20"
 ]
 representation_strategy = ['mean', 'sampled']
 for strat in representation_strategy:
   result_path = os.path.join(model_directory, "metrics", strat,
-                             "fair_downstream_task")
+                             "reduced_downstream_task")
   representation_path = os.path.join(model_directory, "postprocessed", strat)
   evaluate.evaluate_with_gin(
     representation_path, result_path, overwrite, gin_bindings=gin_bindings)

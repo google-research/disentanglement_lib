@@ -14,14 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Test script for the new functionalities of disentanglement_lib for the
-fairness project. To be run as:
+"""Test script for the evaluation based on a downstream task with reduced
+representation evaluation, optimized for execution on cluster. To be run as:
 
->> python fairness_test.py <model_num>
+>> python dlib_reduced_cluster.py <model_num>
 
 The steps are:
-1) Download the model specified as argument of the script
-2) Evaluate on a fairness downstream task
+1) Check if the model specified as argument of the script is present
+2) Evaluate on the downstream task with reduced representation
 """
 
 # Imports
@@ -63,20 +63,20 @@ if not os.path.isdir(model_directory):
 # 2. Evaluate on a fairness downstream task
 # ------------------------------------------------------------------------------
 gin_bindings = [
-  "evaluation.evaluation_fn = @fair_downstream_task",
-  "fair_representation.correlation_measure = @factorwise_dci",
+  "evaluation.evaluation_fn = @reduced_downstream_task",
+  "reduced_representation.correlation_measure = @factorwise_dci",
   "predictor.predictor_fn = @gradient_boosting_classifier",
   "dataset.name='auto'",
   "evaluation.random_seed = 0",
-  "fair_downstream_task.num_train=[1000, 5000, 10000]",
-  "fair_downstream_task.num_test=1000",
+  "reduced_downstream_task.num_train=[1000, 5000, 10000]",
+  "reduced_downstream_task.num_test=1000",
   "discretizer.discretizer_fn = @histogram_discretizer",
   "discretizer.num_bins = 20"
 ]
 representation_strategy = ['mean', 'sampled']
 for strat in representation_strategy:
   result_path = os.path.join(model_directory, "metrics", strat,
-                             "fair_downstream_task")
+                             "reduced_downstream_task")
   representation_path = os.path.join(model_directory, "postprocessed", strat)
   evaluate.evaluate_with_gin(
     representation_path, result_path, overwrite, gin_bindings=gin_bindings)
