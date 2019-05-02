@@ -15,8 +15,8 @@
 
 """Reduced downstream classification task.
 
-Test downstream performance after removing the most predictive feature for each
-factor of variation.
+Test downstream performance after removing the k most predictive features for
+each factor of variation.
 """
 
 from __future__ import absolute_import
@@ -35,19 +35,22 @@ import gin.tf
 def compute_reduced_downstream_task(ground_truth_data,
                                     representation_function,
                                     random_state,
+                                    num_factors_to_remove=gin.REQUIRED,
                                     num_train=gin.REQUIRED,
                                     num_test=gin.REQUIRED,
                                     batch_size=16):
   """Computes loss of a reduced downstream task.
 
   Measure the information leakage in each latent component after removing the
-  most informative feature for the prediction task.
+  k ("factors_to_remove") most informative features for the prediction task.
 
   Args:
     ground_truth_data: GroundTruthData to be sampled from.
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    num_factors_to_remove: number of factors to remove from the latent
+    representation.
     num_train: Number of points used for training.
     num_test: Number of points used for testing.
     batch_size: Batch size for sampling.
@@ -67,9 +70,14 @@ def compute_reduced_downstream_task(ground_truth_data,
     # Compute the reduced representation and test it for each factor of
     # variation
     for factor_of_interest in range(ground_truth_data.num_factors):
-      reduced_mus_train, reduced_mus_test =\
-        compute_reduced_representation(mus_train, ys_train, mus_test, ys_test,
-                                       factor_of_interest)
+      # Copy the training data and eliminate the k most informative factors
+      reduced_mus_train = mus_train.copy()
+      reduced_mus_test = mus_test.copy()
+      for _ in range(num_factors_to_remove):
+        reduced_mus_train, reduced_mus_test =\
+          compute_reduced_representation(reduced_mus_train, ys_train,
+                                         reduced_mus_test, ys_test,
+                                         factor_of_interest)
       predictor_model = utils.make_predictor_fn()
       train_acc, test_acc = compute_predictive_accuracy(
         np.transpose(reduced_mus_train), ys_train,
@@ -79,9 +87,9 @@ def compute_reduced_downstream_task(ground_truth_data,
       size_string = str(train_size)
       for i in range(len(train_acc)):
         scores[size_string +
-               ":train_accuracy_{}_without_{}".format(
+               ":train_accuracy_{}_factor_of_interest_{}".format(
                  i, factor_of_interest)] = train_acc[i]
-        scores[size_string + ":test_accuracy_{}_without_{}".format(
+        scores[size_string + ":test_accuracy_{}_factor_of_interest_{}".format(
                  i, factor_of_interest)] = test_acc[i]
   return scores
 
@@ -100,7 +108,7 @@ def compute_reduced_representation(mus_train, ys_train, mus_test, ys_test,
     mus_test: latent means of the test batch.
     ys_test: labels of the test batch.
     factor_of_interest: index of the factor of interest.
-    correlation_measure: measure of correlation
+    correlation_measure: measure of correlation.
   """
   importance_matrix = correlation_measure(mus_train, ys_train, mus_test,
                                           ys_test)
