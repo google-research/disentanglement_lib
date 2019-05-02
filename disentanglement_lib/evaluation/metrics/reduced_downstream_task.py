@@ -85,6 +85,12 @@ def compute_reduced_downstream_task(ground_truth_data,
         ys_test, predictor_model)
       # Save the scores (accuracies) in the score dictionary
       size_string = str(train_size)
+      scores[size_string +
+             ":mean_train_accuracy_factor_of_interest_{}".format(
+               factor_of_interest)] = np.mean(train_acc)
+      scores[size_string +
+             ":mean_test_accuracy_factor_of_interest_{}".format(
+               factor_of_interest)] = np.mean(test_acc)
       for i in range(len(train_acc)):
         scores[size_string +
                ":train_accuracy_{}_factor_of_interest_{}".format(
