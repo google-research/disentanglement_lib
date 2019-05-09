@@ -80,13 +80,13 @@ def scalable_disentanglement_score(gen_factors, latents, diff_quantile=0.99):
 
   Args:
     gen_factors: Numpy array of shape (num samples, num generative factors),
-      matrix of ground truth generative factors
+      matrix of ground truth generative factors.
     latents: Numpy array of shape (num samples, num latent dimensions), matrix
-      of latent variables
-    diff_quantile: float value between 0 and 1 to decide what quantile of
-      diffs to select (use 1.0 for the version in the paper)
+      of latent variables.
+    diff_quantile: Float value between 0 and 1 to decide what quantile of
+      diffs to select (use 1.0 for the version in the paper).
   Returns:
-    Dictionary with IRS scores
+    Dictionary with IRS scores.
   """
   num_gen = gen_factors.shape[1]
   num_lat = latents.shape[1]

@@ -11,6 +11,7 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+import tensorflow as tf
 
 from disentanglement_lib.evaluation.metrics.irs import scalable_disentanglement_score
 
@@ -40,7 +41,8 @@ def vis_all_interventional_effects(gen_factors, latents, output_dir):
 
   fig.tight_layout()
   output_path = os.path.join(output_dir, 'interventional_effect.png')
-  fig.savefig(output_path)
+  with tf.gfile.Open(output_path, "wb") as path:
+    fig.savefig(path)
 
 
 def visualize_interventional_effect(gen_factors, latents, latent_dim,
@@ -51,12 +53,12 @@ def visualize_interventional_effect(gen_factors, latents, latent_dim,
   """Visualize single cell of interventional effects.
 
   Args:
-    gen_factors: Ground truth generative factors
-    latents: latent factors
-    latent_dim: latent dimension under consideration
-    const_factor_idx: generative factor which is being kept constant
-    intervened_factor_idx: g_j which we intervene on
-    no_conditioning: whether or not we should condition on i
+    gen_factors: Ground truth generative factors.
+    latents: Latent factors.
+    latent_dim: Latent dimension under consideration.
+    const_factor_idx: Generative factor which is being kept constant.
+    intervened_factor_idx: Generative factor on which we intervene.
+    no_conditioning: Whether or not we should condition on const_factor_idx.
   """
   if ax is None:
     plt.figure(figsize=(10, 7))
