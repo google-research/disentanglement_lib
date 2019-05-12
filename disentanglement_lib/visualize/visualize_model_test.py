@@ -46,7 +46,8 @@ class VisualizeTest(parameterized.TestCase):
         self.create_tempdir("visualization_{}".format(activation)).full_path,
         True,
         num_animations=1,
-        num_frames=4)
+        num_frames=4,
+        num_points_irs=100)
 
 
 if __name__ == "__main__":

@@ -24,8 +24,10 @@ from disentanglement_lib.evaluation.metrics import beta_vae  # pylint: disable=u
 from disentanglement_lib.evaluation.metrics import dci  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import downstream_task  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import factor_vae  # pylint: disable=unused-import
+from disentanglement_lib.evaluation.metrics import irs  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import mig  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import modularity_explicitness  # pylint: disable=unused-import
+from disentanglement_lib.evaluation.metrics import reduced_downstream_task  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import sap_score  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import unsupervised_metrics  # pylint: disable=unused-import
 from disentanglement_lib.utils import results

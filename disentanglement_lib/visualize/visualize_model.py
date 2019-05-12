@@ -22,6 +22,7 @@ import os
 from disentanglement_lib.data.ground_truth import named_data
 from disentanglement_lib.utils import results
 from disentanglement_lib.visualize import visualize_util
+from disentanglement_lib.visualize.visualize_irs import vis_all_interventional_effects
 import numpy as np
 from scipy import stats
 from six.moves import range
@@ -36,7 +37,8 @@ def visualize(model_dir,
               overwrite=False,
               num_animations=5,
               num_frames=20,
-              fps=10):
+              fps=10,
+              num_points_irs=10000):
   """Takes trained model from model_dir and visualizes it in output_dir.
 
   Args:
@@ -46,6 +48,7 @@ def visualize(model_dir,
     num_animations: Integer with number of distinct animations to create.
     num_frames: Integer with number of frames in each animation.
     fps: Integer with frame rate for the animation.
+    num_points_irs: Number of points to be used for the IRS plots.
   """
   # Fix the random seed for reproducibility.
   random_state = np.random.RandomState(0)
@@ -193,6 +196,14 @@ def visualize(model_dir,
         images.append(np.array(activation(_decoder(code))))
       filename = os.path.join(results_dir, "minmax_interval_cycle%d.gif" % i)
       visualize_util.save_animation(np.array(images), filename, fps)
+
+    # Interventional effects visualization.
+    factors = dataset.sample_factors(num_points_irs, random_state)
+    obs = dataset.sample_observations_from_factors(factors, random_state)
+    latents = f(
+        dict(images=obs), signature="gaussian_encoder", as_dict=True)["mean"]
+    results_dir = os.path.join(output_dir, "interventional_effects")
+    vis_all_interventional_effects(factors, latents, results_dir)
 
   # Finally, we clear the gin config that we have set.
   gin.clear_config()

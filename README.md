@@ -5,7 +5,7 @@
 It supports a variety of different models, metrics and data sets:
 
 * *Models*: BetaVAE, FactorVAE, BetaTCVAE, DIP-VAE
-* *Metrics*: BetaVAE score, FactorVAE score, Mutual Information Gap, SAP score, DCI, MCE
+* *Metrics*: BetaVAE score, FactorVAE score, Mutual Information Gap, SAP score, DCI, MCE, IRS
 * *Data sets*: dSprites, Color/Noisy/Scream-dSprites, SmallNORB, Cars3D, and Shapes3D
 * It also includes 10'800 pretrained disentanglement models (see below for details).
 

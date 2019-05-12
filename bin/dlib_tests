@@ -29,6 +29,7 @@ python -m disentanglement_lib.data.ground_truth.util_test
 python -m disentanglement_lib.evaluation.evaluate_test
 python -m disentanglement_lib.evaluation.metrics.beta_vae_test
 python -m disentanglement_lib.evaluation.metrics.factor_vae_test
+python -m disentanglement_lib.evaluation.metrics.irs_test
 python -m disentanglement_lib.evaluation.metrics.modularity_explicitness_test
 python -m disentanglement_lib.evaluation.metrics.mig_test
 python -m disentanglement_lib.evaluation.metrics.dci_test
