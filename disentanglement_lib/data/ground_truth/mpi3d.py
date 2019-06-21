@@ -1,3 +1,4 @@
+
 # coding=utf-8
 # Copyright 2018 The DisentanglementLib Authors.  All rights reserved.
 #
@@ -13,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""MPI3D Simulated Toy data set."""
+"""MPI3D data set."""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -28,18 +29,19 @@ from disentanglement_lib.data.ground_truth import util
 import numpy as np
 import tensorflow as tf
 
-MPI3D_TOY_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_toy")
 
-class MPI3D_Toy(ground_truth_data.GroundTruthData):
-  """MPI3D_Toy dataset.
+class MPI3D(ground_truth_data.GroundTruthData):
+  """MPI3D dataset.
 
-  This simulated toy dataset has been introduced as a part of NEURIPS 2019 Disentanglement 
+  MPI3D datasets have been introduced as a part of NEURIPS 2019 Disentanglement
   Competition.(https://www.aicrowd.com/challenges/neurips-2019-disentanglement-challenge).
+  There are three different datasets
+  1. Simplistic rendered images (mpi3d_toy).
+  2. Realistic rendered images (mpi3d_realistic).
+  3. Real world images (mpi3d_real).
   More details about this dataset can be found in "On the Transfer of Inductive Bias from
   Simulation to the Real World: a New Disentanglement Dataset"(https://arxiv.org/abs/1906.03292).
-  The dataset can be downloaded from the challenge website 
-  "https://storage.cloud.google.com/disentanglement_dataset/sim_toy_ordered.tar.gz"
+  The dataset can be downloaded from the challenge website.
 
   The ground-truth factors of variation in the dataset are:
   0 - Object Color (4 different values)
@@ -51,7 +53,19 @@ class MPI3D_Toy(ground_truth_data.GroundTruthData):
   6 - Second DOF (40 different values)
   """
 
-  def __init__(self):
+  def __init__(self, mode="mpi3d_toy"):
+    if mode == "mpi3d_toy":
+        MPI3D_PATH = os.path.join(
+            os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_toy")
+    elif mode == "mpi3d_realistic":
+        MPI3D_PATH = os.path.join(
+            os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_realistic")
+    elif mode == "mpi3d_real":
+        MPI3D_PATH = os.path.join(
+            os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_real")
+    else:
+        raise Exception("Unknown mode provided.")
+
     self.factor_sizes = [4, 4, 2, 3, 3, 40, 40]
     self.latent_factor_indices = [0, 1, 2, 3, 4, 5, 6]
     self.num_total_factors = 7
@@ -59,7 +73,7 @@ class MPI3D_Toy(ground_truth_data.GroundTruthData):
                                                     self.latent_factor_indices)
     self.factor_bases = np.prod(self.factor_sizes) / np.cumprod(
         self.factor_sizes)
-    self.images = self._load_data()
+    self.images = self._load_data(path = MPI3D_PATH)
 
   @property
   def num_factors(self):
@@ -88,8 +102,8 @@ class MPI3D_Toy(ground_truth_data.GroundTruthData):
     indices = np.array(np.dot(all_factors, self.factor_bases), dtype=np.int64)
     return self.images[indices]/255.
 
-  def _load_data(self):
+  def _load_data(self, path):
     imgs_list = []
-    for infile in sorted(glob.glob(os.path.join(MPI3D_TOY_PATH ,'*.png')), key=self.numericalSort):
+    for infile in sorted(glob.glob(os.path.join(path ,'*.png')), key=self.numericalSort):
         imgs_list.append(imageio.imread(infile))
     return np.asarray(imgs_list, dtype = np.uint8)

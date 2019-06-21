@@ -22,7 +22,7 @@ from disentanglement_lib.data.ground_truth import dsprites
 from disentanglement_lib.data.ground_truth import dummy_data
 from disentanglement_lib.data.ground_truth import norb
 from disentanglement_lib.data.ground_truth import shapes3d
-from disentanglement_lib.data.ground_truth import mpi3d_toy
+from disentanglement_lib.data.ground_truth import mpi3d
 import gin.tf
 
 
@@ -52,7 +52,11 @@ def get_named_ground_truth_data(name):
   elif name == "cars3d":
     return cars3d.Cars3D()
   elif name == "mpi3d_toy":
-    return mpi3d_toy.MPI3D_Toy()
+    return mpi3d.MPI3D(mode="mpi3d_toy")
+  elif name == "mpi3d_realistic":
+    raise NotImplementedError
+  elif name == "mpi3d_real":
+    raise NotImplementedError
   elif name == "shapes3d":
     return shapes3d.Shapes3D()
   elif name == "dummy_data":
