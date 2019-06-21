@@ -68,6 +68,13 @@ if [[ ! -d "scream" ]]; then
 fi
 echo "Downloading scream completed!"
 
-
+echo "Downloading mpi3d_toy dataset."
+if [[ ! -d "mpi3d_toy" ]]; then
+  wget -O sim_toy_ordered.tar.gz https://storage.googleapis.com/disentanglement_dataset/sim_toy_ordered.tar.gz
+  tar xzf sim_toy_ordered.tar.gz
+  rm sim_toy_ordered.tar.gz
+  mv sim_toy_64x_ordered mpi3d_toy
+fi
+echo "Downloading mpi3d_toy completed!"
 
 
