@@ -41,7 +41,6 @@ class MPI3D(ground_truth_data.GroundTruthData):
   3. Real world images (mpi3d_real).
   More details about this dataset can be found in "On the Transfer of Inductive Bias from
   Simulation to the Real World: a New Disentanglement Dataset"(https://arxiv.org/abs/1906.03292).
-  The dataset can be downloaded from the challenge website.
 
   The ground-truth factors of variation in the dataset are:
   0 - Object Color (4 different values)
