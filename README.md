@@ -204,6 +204,18 @@ Contains helper functions to aggregate and save the results of the pipeline as w
 * `disentanglement_lib/visualize`:
 Contains visualization functions for the datasets and the trained models.
 
+## NeurIPS 2019 Disentanglement Challenge
+
+The library is also used for the [NeurIPS 2019 Disentanglement challenge](https://www.aicrowd.com/challenges/neurips-2019-disentanglement-challenge). The challenge consists of three different datasets.
+ 1. Simplistic rendered images ([mpi3d_toy](https://storage.googleapis.com/disentanglement_dataset/data_npz/sim_toy_64x_ordered_without_heldout_factors.npz))
+ 2. Realistic rendered images (mpi3d_realistic): _not yet published_
+ 3. Real world images (mpi3d_real): _not yet published_
+
+ Currently, only the simplistic rendered dataset is publicly available and will be automatically downloaded by running the following command.
+ ```
+dlib_download_data
+```
+Other datasets will be made available at the later stages of the competition. For more information on the competition kindly visit the [competition website](https://www.aicrowd.com/challenges/neurips-2019-disentanglement-challenge). More information about the dataset can be found [here](https://github.com/rr-learning/disentanglement_dataset) or in the arXiv preprint [On the Transfer of Inductive Bias from Simulation to the Real World: a New Disentanglement Dataset](https://arxiv.org/abs/1906.03292).
 
 ## Feedback
 Please send any feedback to bachem@google.com and francesco.locatello@tuebingen.mpg.de.
