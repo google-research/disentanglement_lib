@@ -58,7 +58,7 @@ class MPI3D(ground_truth_data.GroundTruthData):
         if not tf.io.gfile.exists (MPI3D_PATH):
             raise Exception("Dataset '{}' not found. Make sure the dataset is publicly available and downloaded correctly.".format(mode))
         else:
-            with tf.gfile.GFile(MPI3D_PATH) as f:
+            with tf.io.gfile.GFile(MPI3D_PATH, "rb") as f:
                 data = np.load(f)
     elif mode == "mpi3d_realistic":
         MPI3D_PATH = os.path.join(
@@ -66,7 +66,7 @@ class MPI3D(ground_truth_data.GroundTruthData):
         if not tf.io.gfile.exists (MPI3D_PATH):
             raise Exception("Dataset '{}' not found. Make sure the dataset is publicly available and downloaded correctly.".format(mode))
         else:
-            with tf.gfile.GFile(MPI3D_PATH) as f:
+            with tf.io.gfile.GFile(MPI3D_PATH, "rb") as f:
                 data = np.load(f)
     elif mode == "mpi3d_real":
         MPI3D_PATH = os.path.join(
@@ -74,7 +74,7 @@ class MPI3D(ground_truth_data.GroundTruthData):
         if not tf.io.gfile.exists (MPI3D_PATH):
             raise Exception("Dataset '{}' not found. Make sure the dataset is publicly available and downloaded correctly.".format(mode))
         else:
-            with tf.gfile.GFile(MPI3D_PATH) as f:
+            with tf.io.gfile.GFile(MPI3D_PATH, "rb") as f:
                 data = np.load(f)
     else:
         raise Exception("Unknown mode provided.")
