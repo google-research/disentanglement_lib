@@ -20,10 +20,8 @@ from setuptools import setup
 
 setup(
     name='disentanglement_lib',
-    version='0.1',
-    description=('Code for the "Challenging Common Assumptions in the '
-                 'Unsupervised Learning of Disentangled Representations" '
-                 'submission'),
+    version='1.0',
+    description=('Library for research on disentangled representations.'),
     author='DisentanglementLib Authors',
     author_email='no-reply@google.com',
     url='http://github.com/google-research/disentanglement_lib',
