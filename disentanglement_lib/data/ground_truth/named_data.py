@@ -20,6 +20,7 @@ from __future__ import print_function
 from disentanglement_lib.data.ground_truth import cars3d
 from disentanglement_lib.data.ground_truth import dsprites
 from disentanglement_lib.data.ground_truth import dummy_data
+from disentanglement_lib.data.ground_truth import mpi3d
 from disentanglement_lib.data.ground_truth import norb
 from disentanglement_lib.data.ground_truth import shapes3d
 from disentanglement_lib.data.ground_truth import mpi3d
