@@ -21,6 +21,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from absl import logging
+from disentanglement_lib.evaluation.metrics import utils
 import numpy as np
 from six.moves import range
 import gin.tf
@@ -67,9 +68,10 @@ def compute_factor_vae(ground_truth_data,
     return scores_dict
 
   logging.info("Generating training set.")
-  training_votes = _generate_training_batch(
-      ground_truth_data, representation_function, batch_size, num_train,
-      random_state, global_variances, active_dims)
+  training_votes = _generate_training_batch(ground_truth_data,
+                                            representation_function, batch_size,
+                                            num_train, random_state,
+                                            global_variances, active_dims)
   classifier = np.argmax(training_votes, axis=0)
   other_index = np.arange(training_votes.shape[1])
 
@@ -79,13 +81,14 @@ def compute_factor_vae(ground_truth_data,
   logging.info("Training set accuracy: %.2g", train_accuracy)
 
   logging.info("Generating evaluation set.")
-  eval_votes = _generate_training_batch(
-      ground_truth_data, representation_function, batch_size, num_eval,
-      random_state, global_variances, active_dims)
+  eval_votes = _generate_training_batch(ground_truth_data,
+                                        representation_function, batch_size,
+                                        num_eval, random_state,
+                                        global_variances, active_dims)
 
   logging.info("Evaluate evaluation set accuracy.")
-  eval_accuracy = np.sum(
-      eval_votes[classifier, other_index]) * 1. / np.sum(eval_votes)
+  eval_accuracy = np.sum(eval_votes[classifier,
+                                    other_index]) * 1. / np.sum(eval_votes)
   logging.info("Evaluation set accuracy: %.2g", eval_accuracy)
   scores_dict["train_accuracy"] = train_accuracy
   scores_dict["eval_accuracy"] = eval_accuracy
@@ -93,17 +96,18 @@ def compute_factor_vae(ground_truth_data,
   return scores_dict
 
 
-@gin.configurable(
-    "prune_dims",
-    blacklist=["variances"])
+@gin.configurable("prune_dims", blacklist=["variances"])
 def _prune_dims(variances, threshold=0.):
   """Mask for dimensions collapsed to the prior."""
   scale_z = np.sqrt(variances)
   return scale_z >= threshold
 
 
-def _compute_variances(ground_truth_data, representation_function, batch_size,
-                       random_state):
+def _compute_variances(ground_truth_data,
+                       representation_function,
+                       batch_size,
+                       random_state,
+                       eval_batch_size=64):
   """Computes the variance for each dimension of the representation.
 
   Args:
@@ -112,12 +116,18 @@ def _compute_variances(ground_truth_data, representation_function, batch_size,
       outputs a representation.
     batch_size: Number of points to be used to compute the variances.
     random_state: Numpy random state used for randomness.
+    eval_batch_size: Batch size used to eval representation.
 
   Returns:
     Vector with the variance of each dimension.
   """
   observations = ground_truth_data.sample_observations(batch_size, random_state)
-  representations = representation_function(observations)
+  representations = utils.obtain_representation(observations,
+                                                representation_function,
+                                                eval_batch_size)
+  representations = np.transpose(representations)
+  assert representations.shape[0] == batch_size
+  assert representations.shape[1] == ground_truth_data.num_factors
   return np.var(representations, axis=0, ddof=1)
 
 
@@ -151,9 +161,8 @@ def _generate_training_sample(ground_truth_data, representation_function,
       factors, random_state)
   representations = representation_function(observations)
   local_variances = np.var(representations, axis=0, ddof=1)
-  argmin = np.argmin(
-      local_variances[active_dims] / global_variances[active_dims]
-      )
+  argmin = np.argmin(local_variances[active_dims] /
+                     global_variances[active_dims])
   return factor_index, argmin
 
 
@@ -176,12 +185,13 @@ def _generate_training_batch(ground_truth_data, representation_function,
   Returns:
     (num_factors, dim_representation)-sized numpy array with votes.
   """
-  votes = np.zeros(
-      (ground_truth_data.num_factors, global_variances.shape[0]),
-      dtype=np.int64)
+  votes = np.zeros((ground_truth_data.num_factors, global_variances.shape[0]),
+                   dtype=np.int64)
   for _ in range(num_points):
-    factor_index, argmin = _generate_training_sample(
-        ground_truth_data, representation_function, batch_size, random_state,
-        global_variances, active_dims)
+    factor_index, argmin = _generate_training_sample(ground_truth_data,
+                                                     representation_function,
+                                                     batch_size, random_state,
+                                                     global_variances,
+                                                     active_dims)
     votes[factor_index, argmin] += 1
   return votes

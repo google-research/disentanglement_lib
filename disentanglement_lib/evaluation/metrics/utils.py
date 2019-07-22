@@ -85,6 +85,31 @@ def split_train_test(observations, train_percentage):
   return observations_train, observations_test
 
 
+def obtain_representation(observations, representation_function, batch_size):
+  """"Obtain representations from observations.
+
+  Args:
+    observations: Observations for which we compute the representation.
+    representation_function: Function that takes observation as input and
+      outputs a representation.
+    batch_size: Batch size to compute the representation.
+  Returns:
+    representations: Codes (num_codes, num_points)-Numpy array.
+  """
+  representations = None
+  num_points = observations.shape[0]
+  i = 0
+  while i < num_points:
+    num_points_iter = min(num_points - i, batch_size)
+    current_observations = observations[i:i + num_points_iter]
+    if i == 0:
+      representations = representation_function(current_observations)
+    else:
+      representations = np.vstack((representations,
+                                   representation_function(
+                                       current_observations)))
+    i += num_points_iter
+  return np.transpose(representations)
 
 
 def discrete_mutual_info(mus, ys):
