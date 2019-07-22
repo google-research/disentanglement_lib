@@ -127,8 +127,7 @@ def visualize(model_dir,
       gfile.MakeDirs(results_dir)
     for i in range(means.shape[1]):
       pics = activation(
-          latent_traversal_1d_multi_dim(_decoder, means[i, :], None,
-                                        num_latent))
+          latent_traversal_1d_multi_dim(_decoder, means[i, :], None))
       file_name = os.path.join(results_dir, "traversals{}.jpg".format(i))
       visualize_util.grid_save_images([pics], file_name)
 

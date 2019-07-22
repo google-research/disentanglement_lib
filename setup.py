@@ -20,7 +20,7 @@ from setuptools import setup
 
 setup(
     name='disentanglement_lib',
-    version='1.0',
+    version='1.1',
     description=('Library for research on disentangled representations.'),
     author='DisentanglementLib Authors',
     author_email='no-reply@google.com',
