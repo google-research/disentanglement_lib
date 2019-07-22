@@ -127,7 +127,6 @@ def _compute_variances(ground_truth_data,
                                                 eval_batch_size)
   representations = np.transpose(representations)
   assert representations.shape[0] == batch_size
-  assert representations.shape[1] == ground_truth_data.num_factors
   return np.var(representations, axis=0, ddof=1)
 
 
