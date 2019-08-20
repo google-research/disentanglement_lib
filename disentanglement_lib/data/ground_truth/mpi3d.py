@@ -85,6 +85,17 @@ class MPI3D(ground_truth_data.GroundTruthData):
       else:
         with tf.io.gfile.GFile(mpi3d_path, "rb") as f:
           data = np.load(f)
+    elif mode == "mpi3d_real_subset":
+      mpi3d_path = os.path.join(
+          os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_real_subset",
+          "mpi3d_real_subset.npz")
+      if not tf.io.gfile.exists(mpi3d_path):
+        raise ValueError(
+            "Dataset '{}' not found. Make sure the dataset is publicly available and downloaded correctly."
+            .format(mode))
+      else:
+        with tf.io.gfile.GFile(mpi3d_path, "rb") as f:
+          data = np.load(f)
     else:
       raise ValueError("Unknown mode provided.")
 
