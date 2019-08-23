@@ -52,6 +52,10 @@ class MPI3D(ground_truth_data.GroundTruthData):
   """
 
   def __init__(self, mode="mpi3d_toy"):
+    self.factor_sizes = [4, 4, 2, 3, 3, 40, 40]
+    self.latent_factor_indices = [0, 1, 2, 3, 4, 5, 6]
+    self.num_total_factors = 7
+
     if mode == "mpi3d_toy":
       mpi3d_path = os.path.join(
           os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_toy",
@@ -85,13 +89,23 @@ class MPI3D(ground_truth_data.GroundTruthData):
       else:
         with tf.io.gfile.GFile(mpi3d_path, "rb") as f:
           data = np.load(f)
+    elif mode == "mpi3d_real_subset":
+      self.factor_sizes = [2, 2, 2, 3, 3, 40, 40]
+
+      mpi3d_path = os.path.join(
+          os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_real",
+          "mpi3d_real_subset.npz")
+      if not tf.io.gfile.exists(mpi3d_path):
+        raise ValueError(
+            "Dataset '{}' not found. Make sure the dataset is publicly available and downloaded correctly."
+            .format(mode))
+      else:
+        with tf.io.gfile.GFile(mpi3d_path, "rb") as f:
+          data = np.load(f)
     else:
       raise ValueError("Unknown mode provided.")
 
     self.images = data["images"]
-    self.factor_sizes = [4, 4, 2, 3, 3, 40, 40]
-    self.latent_factor_indices = [0, 1, 2, 3, 4, 5, 6]
-    self.num_total_factors = 7
     self.state_space = util.SplitDiscreteStateSpace(self.factor_sizes,
                                                     self.latent_factor_indices)
     self.factor_bases = np.prod(self.factor_sizes) / np.cumprod(
@@ -117,3 +131,4 @@ class MPI3D(ground_truth_data.GroundTruthData):
     all_factors = self.state_space.sample_all_factors(factors, random_state)
     indices = np.array(np.dot(all_factors, self.factor_bases), dtype=np.int64)
     return self.images[indices] / 255.
+

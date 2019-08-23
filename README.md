@@ -206,10 +206,11 @@ Contains visualization functions for the datasets and the trained models.
 
 ## NeurIPS 2019 Disentanglement Challenge
 
-The library is also used for the [NeurIPS 2019 Disentanglement challenge](https://www.aicrowd.com/challenges/neurips-2019-disentanglement-challenge). The challenge consists of three different datasets.
+The library is also used for the [NeurIPS 2019 Disentanglement challenge](https://www.aicrowd.com/challenges/neurips-2019-disentanglement-challenge). The challenge consists of four different datasets.
  1. Simplistic rendered images ([mpi3d_toy](https://storage.googleapis.com/disentanglement_dataset/data_npz/sim_toy_64x_ordered_without_heldout_factors.npz))
  2. Realistic rendered images (mpi3d_realistic): _not yet published_
  3. Real world images (mpi3d_real): _not yet published_
+ 4. Subset of Real world images (mpi3d_real_subset): _not yet published_
 
  Currently, only the simplistic rendered dataset is publicly available and will be automatically downloaded by running the following command.
  ```
