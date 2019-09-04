@@ -36,7 +36,7 @@ class MPI3D(ground_truth_data.GroundTruthData):
   2. Realistic rendered images (mpi3d_realistic).
   3. Real world images (mpi3d_real).
 
-  Currently only mpi3d_toy is publicly available. More details about this
+  Currently, mpi3d_toy and mpi3d_realistic are publicly available. More details about this
   dataset can be found in "On the Transfer of Inductive Bias from Simulation to
   the Real World: a New Disentanglement Dataset"
   (https://arxiv.org/abs/1906.03292).
