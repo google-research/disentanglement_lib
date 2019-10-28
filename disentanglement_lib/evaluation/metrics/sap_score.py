@@ -31,10 +31,12 @@ import gin.tf
 
 @gin.configurable(
     "sap_score",
-    blacklist=["ground_truth_data", "representation_function", "random_state"])
+    blacklist=["ground_truth_data", "representation_function", "random_state",
+               "artifact_dir"])
 def compute_sap(ground_truth_data,
                 representation_function,
                 random_state,
+                artifact_dir=None,
                 num_train=gin.REQUIRED,
                 num_test=gin.REQUIRED,
                 batch_size=16,
@@ -46,6 +48,7 @@ def compute_sap(ground_truth_data,
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    artifact_dir: Optional path to directory where artifacts can be saved.
     num_train: Number of points used for training.
     num_test: Number of points used for testing discrete variables.
     batch_size: Batch size for sampling.
@@ -54,6 +57,7 @@ def compute_sap(ground_truth_data,
   Returns:
     Dictionary with SAP score.
   """
+  del artifact_dir
   logging.info("Generating training set.")
   mus, ys = utils.generate_batch_factor_code(
       ground_truth_data, representation_function, num_train,
@@ -67,13 +71,13 @@ def compute_sap(ground_truth_data,
 
 def _compute_sap(mus, ys, mus_test, ys_test, continuous_factors):
   """Computes score based on both training and testing codes and factors."""
-  score_matrix = _compute_score_matrix(mus, ys, mus_test,
-                                       ys_test, continuous_factors)
+  score_matrix = compute_score_matrix(mus, ys, mus_test,
+                                      ys_test, continuous_factors)
   # Score matrix should have shape [num_latents, num_factors].
   assert score_matrix.shape[0] == mus.shape[0]
   assert score_matrix.shape[1] == ys.shape[0]
   scores_dict = {}
-  scores_dict["SAP_score"] = _compute_avg_diff_top_two(score_matrix)
+  scores_dict["SAP_score"] = compute_avg_diff_top_two(score_matrix)
   logging.info("SAP score: %.2g", scores_dict["SAP_score"])
 
   return scores_dict
@@ -81,7 +85,7 @@ def _compute_sap(mus, ys, mus_test, ys_test, continuous_factors):
 
 
 
-def _compute_score_matrix(mus, ys, mus_test, ys_test, continuous_factors):
+def compute_score_matrix(mus, ys, mus_test, ys_test, continuous_factors):
   """Compute score matrix as described in Section 3."""
   num_latents = mus.shape[0]
   num_factors = ys.shape[0]
@@ -111,6 +115,6 @@ def _compute_score_matrix(mus, ys, mus_test, ys_test, continuous_factors):
   return score_matrix
 
 
-def _compute_avg_diff_top_two(matrix):
+def compute_avg_diff_top_two(matrix):
   sorted_matrix = np.sort(matrix, axis=0)
   return np.mean(sorted_matrix[-1, :] - sorted_matrix[-2, :])

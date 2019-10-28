@@ -12,7 +12,7 @@ It supports a variety of different models, metrics and data sets:
 disentanglement_lib was created by Olivier Bachem and Francesco Locatello at Google Brain Zurich for the large-scale empirical study
 
 > [**Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations.**](https://arxiv.org/abs/1811.12359)
-> *Francesco Locatello, Stefan Bauer, Mario Lucic, Gunnar Rätsch, Sylvain Gelly, Bernhard Schölkopf, Olivier Bachem*. arXiv preprint, 2018.
+> *Francesco Locatello, Stefan Bauer, Mario Lucic, Gunnar Rätsch, Sylvain Gelly, Bernhard Schölkopf, Olivier Bachem*. ICML (Best Paper Award), 2019.
 
 The code is tested with Python 3 and is meant to be run on Linux systems (such as a [Google Cloud Deep Learning VM](https://cloud.google.com/deep-learning-vm/docs/)).
 It uses TensorFlow, Scipy, Numpy, Scikit-Learn, TFHub and Gin.
@@ -217,6 +217,51 @@ dlib_download_data
 ```
 Other datasets will be made available at the later stages of the competition. For more information on the competition kindly visit the [competition website](https://www.aicrowd.com/challenges/neurips-2019-disentanglement-challenge). More information about the dataset can be found [here](https://github.com/rr-learning/disentanglement_dataset) or in the arXiv preprint [On the Transfer of Inductive Bias from Simulation to the Real World: a New Disentanglement Dataset](https://arxiv.org/abs/1906.03292).
 
+
+## Abstract reasoning experiments
+
+The library also includes the code used for the experiments of the following paper in the `disentanglement_lib/evaluation/abstract_reasoning` subdirectory:
+> [**Are Disentangled Representations Helpful for Abstract Visual Reasoning?**](https://arxiv.org/abs/1905.12506)
+> *Sjoerd van Steenkiste, Francesco Locatello, Jürgen Schmidhuber, Olivier Bachem*. NeurIPS, 2019.
+
+The experimental protocol consists of two parts:
+First, to train the disentanglement models, one may use the  the standard replication pipeline (`dlib_reproduce`), for example via the following command:
+
+```
+dlib_reproduce --model_num=<?> --study=abstract_reasoning_study_v1
+```
+where `<?>` should be replaced with a model index between 0 and 359 which
+corresponds to the ID of which model to train.
+
+Second, to train the abstract reasoning models, one can use the automatically installed pipeline `dlib_reason`.
+To configure the model, copy and modify `disentanglement_lib/config/abstract_reasoning_study_v1/stage2/example.gin` as needed.
+Then, use the following command to train and evaluate an abstract reasoning model:
+
+```
+dlib_reason --gin_config=<?> --input_dir=<?> --output_dir=<?>
+```
+The results can then be found in the `results` subdirectory of the output directory.
+
+## Fairness experiments
+
+The library also includes the code used for the experiments of the following paper in `disentanglement_lib/evaluation/metrics/fairness.py`:
+> [**On the Fairness of Disentangled Representations**](https://arxiv.org/abs/1905.13662)
+> *Francesco Locatello, Gabriele Abbati, Tom Rainforth, Stefan Bauer, Bernhard Schoelkopf, Olivier Bachem*. NeurIPS, 2019.
+
+To train and evaluate all the models, simply use the following command:
+
+```
+dlib_reproduce --model_num=<?> --study=fairness_study_v1
+```
+where `<?>` should be replaced with a model index between 0 and 12'599 which
+corresponds to the ID of which model to train.
+
+If you only want to reevaluate an already trained model using the evaluation protocol of the paper, you may use the following command:
+
+```
+dlib_reproduce --model_dir=<model_output_directory> --output_directory=<output> --study=fairness_study_v1
+```
+
 ## Feedback
 Please send any feedback to bachem@google.com and francesco.locatello@tuebingen.mpg.de.
 
@@ -224,11 +269,12 @@ Please send any feedback to bachem@google.com and francesco.locatello@tuebingen.
 If you use **disentanglement_lib**, please consider citing:
 
 ```
-@article{locatello2018challenging,
-  title={Challenging common assumptions in the unsupervised learning of disentangled representations},
-  author={Locatello, Francesco and Bauer, Stefan and Lucic, Mario and Gelly, Sylvain and Sch{\"o}lkopf, Bernhard and Bachem, Olivier},
-  journal={arXiv preprint arXiv:1811.12359},
-  year={2018}
+@inproceedings{locatello2019challenging,
+  title={Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations},
+  author={Locatello, Francesco and Bauer, Stefan and Lucic, Mario and Raetsch, Gunnar and Gelly, Sylvain and Sch{\"o}lkopf, Bernhard and Bachem, Olivier},
+  booktitle={International Conference on Machine Learning},
+  pages={4114--4124},
+  year={2019}
 }
 ```
 

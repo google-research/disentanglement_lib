@@ -105,7 +105,8 @@ class DCITest(absltest.TestCase):
     representation_function = lambda x: np.array(x, dtype=np.float64)
     random_state = np.random.RandomState(0)
     scores = dci.compute_dci(
-        ground_truth_data, representation_function, random_state, 1000, 1000)
+        ground_truth_data, representation_function, random_state, None, 1000,
+        1000)
     self.assertBetween(scores["disentanglement"], 0.9, 1.0)
     self.assertBetween(scores["completeness"], 0.9, 1.0)
 
@@ -121,7 +122,8 @@ class DCITest(absltest.TestCase):
       return code
     random_state = np.random.RandomState(0)
     scores = dci.compute_dci(
-        ground_truth_data, representation_function, random_state, 1000, 1000)
+        ground_truth_data, representation_function, random_state, None, 1000,
+        1000)
     self.assertBetween(scores["disentanglement"], 0.0, 0.2)
     self.assertBetween(scores["completeness"], 0.0, 0.2)
 
@@ -132,7 +134,8 @@ class DCITest(absltest.TestCase):
       return np.hstack([x, x])
     random_state = np.random.RandomState(0)
     scores = dci.compute_dci(
-        ground_truth_data, representation_function, random_state, 1000, 1000)
+        ground_truth_data, representation_function, random_state, None, 1000,
+        1000)
     self.assertBetween(scores["disentanglement"], 0.9, 1.0)
     target = 1. - np.log(2)/np.log(10)
     self.assertBetween(scores["completeness"], target-.1, target+.1)

@@ -25,10 +25,12 @@ import gin.tf
 
 @gin.configurable(
     "downstream_task",
-    blacklist=["ground_truth_data", "representation_function", "random_state"])
+    blacklist=["ground_truth_data", "representation_function", "random_state",
+               "artifact_dir"])
 def compute_downstream_task(ground_truth_data,
                             representation_function,
                             random_state,
+                            artifact_dir=None,
                             num_train=gin.REQUIRED,
                             num_test=gin.REQUIRED,
                             batch_size=16):
@@ -39,6 +41,7 @@ def compute_downstream_task(ground_truth_data,
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    artifact_dir: Optional path to directory where artifacts can be saved.
     num_train: Number of points used for training.
     num_test: Number of points used for testing.
     batch_size: Batch size for sampling.
@@ -46,6 +49,7 @@ def compute_downstream_task(ground_truth_data,
   Returns:
     Dictionary with scores.
   """
+  del artifact_dir
   scores = {}
   for train_size in num_train:
     mus_train, ys_train = utils.generate_batch_factor_code(

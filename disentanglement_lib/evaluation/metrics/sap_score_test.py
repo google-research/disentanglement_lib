@@ -30,8 +30,8 @@ class SapScoreTest(absltest.TestCase):
     representation_function = lambda x: np.array(x, dtype=np.float64)
     random_state = np.random.RandomState(0)
     scores = sap_score.compute_sap(
-        ground_truth_data, representation_function, random_state, 3000, 3000,
-        continuous_factors=True)
+        ground_truth_data, representation_function, random_state, None, 3000,
+        3000, continuous_factors=True)
     self.assertBetween(scores["SAP_score"], 0.9, 1.0)
 
   def test_bad_metric(self):
@@ -39,8 +39,8 @@ class SapScoreTest(absltest.TestCase):
     representation_function = lambda x: np.zeros_like(x, dtype=np.float64)
     random_state = np.random.RandomState(0)
     scores = sap_score.compute_sap(
-        ground_truth_data, representation_function, random_state, 3000, 3000,
-        continuous_factors=True)
+        ground_truth_data, representation_function, random_state, None, 3000,
+        3000, continuous_factors=True)
     self.assertBetween(scores["SAP_score"], 0.0, 0.2)
 
   def test_duplicated_latent_space(self):
@@ -50,8 +50,8 @@ class SapScoreTest(absltest.TestCase):
       return np.hstack([x, x])
     random_state = np.random.RandomState(0)
     scores = sap_score.compute_sap(
-        ground_truth_data, representation_function, random_state, 3000, 3000,
-        continuous_factors=True)
+        ground_truth_data, representation_function, random_state, None, 3000,
+        3000, continuous_factors=True)
     self.assertBetween(scores["SAP_score"], 0.0, 0.2)
 
 if __name__ == "__main__":

@@ -26,6 +26,7 @@ import numpy as np
 import tensorflow as tf
 
 
+
 class MPI3D(ground_truth_data.GroundTruthData):
   """MPI3D dataset.
 
@@ -42,8 +43,10 @@ class MPI3D(ground_truth_data.GroundTruthData):
   (https://arxiv.org/abs/1906.03292).
 
   The ground-truth factors of variation in the dataset are:
-  0 - Object color (4 different values)
-  1 - Object shape (4 different values)
+  0 - Object color (4 different values for the simulated datasets and 6 for the
+    real one)
+  1 - Object shape (4 different values for the simulated datasets and 6 for the
+    real one)
   2 - Object size (2 different values)
   3 - Camera height (3 different values)
   4 - Background colors (3 different values)
@@ -63,6 +66,7 @@ class MPI3D(ground_truth_data.GroundTruthData):
       else:
         with tf.io.gfile.GFile(mpi3d_path, "rb") as f:
           data = np.load(f)
+      self.factor_sizes = [4, 4, 2, 3, 3, 40, 40]
     elif mode == "mpi3d_realistic":
       mpi3d_path = os.path.join(
           os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_realistic",
@@ -74,6 +78,7 @@ class MPI3D(ground_truth_data.GroundTruthData):
       else:
         with tf.io.gfile.GFile(mpi3d_path, "rb") as f:
           data = np.load(f)
+      self.factor_sizes = [4, 4, 2, 3, 3, 40, 40]
     elif mode == "mpi3d_real":
       mpi3d_path = os.path.join(
           os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "mpi3d_real",
@@ -85,11 +90,11 @@ class MPI3D(ground_truth_data.GroundTruthData):
       else:
         with tf.io.gfile.GFile(mpi3d_path, "rb") as f:
           data = np.load(f)
+      self.factor_sizes = [6, 6, 2, 3, 3, 40, 40]
     else:
       raise ValueError("Unknown mode provided.")
 
     self.images = data["images"]
-    self.factor_sizes = [4, 4, 2, 3, 3, 40, 40]
     self.latent_factor_indices = [0, 1, 2, 3, 4, 5, 6]
     self.num_total_factors = 7
     self.state_space = util.SplitDiscreteStateSpace(self.factor_sizes,

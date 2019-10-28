@@ -38,7 +38,7 @@ class MIGTest(absltest.TestCase):
     representation_function = lambda x: x
     random_state = np.random.RandomState(0)
     scores = mig.compute_mig(
-        ground_truth_data, representation_function, random_state, 3000)
+        ground_truth_data, representation_function, random_state, None, 3000)
     self.assertBetween(scores["discrete_mig"], 0.9, 1.0)
 
   def test_bad_metric(self):
@@ -48,7 +48,7 @@ class MIGTest(absltest.TestCase):
     representation_function = np.zeros_like
     random_state = np.random.RandomState(0)
     scores = mig.compute_mig(
-        ground_truth_data, representation_function, random_state, 3000)
+        ground_truth_data, representation_function, random_state, None, 3000)
     self.assertBetween(scores["discrete_mig"], 0.0, 0.2)
 
   def test_duplicated_latent_space(self):
@@ -60,7 +60,7 @@ class MIGTest(absltest.TestCase):
       return np.hstack([x, x])
     random_state = np.random.RandomState(0)
     scores = mig.compute_mig(
-        ground_truth_data, representation_function, random_state, 3000)
+        ground_truth_data, representation_function, random_state, None, 3000)
     self.assertBetween(scores["discrete_mig"], 0.0, 0.1)
 
 if __name__ == "__main__":

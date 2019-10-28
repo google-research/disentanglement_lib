@@ -63,7 +63,7 @@ def grid_save_images(images, image_path):
   save_image(tiled_image, image_path)
 
 
-def padded_grid(images, num_rows=None, padding_px=10):
+def padded_grid(images, num_rows=None, padding_px=10, value=None):
   """Creates a grid with padding in between images."""
   num_images = len(images)
   if num_rows is None:
@@ -77,16 +77,14 @@ def padded_grid(images, num_rows=None, padding_px=10):
   all_images = images + [np.ones_like(images[0])] * num_missing
 
   # Create the final grid.
-  rows = [
-      padded_stack(all_images[i * num_cols:(i + 1) * num_cols], padding_px, 1)
-      for i in range(num_rows)
-  ]
-  return padded_stack(rows, padding_px, axis=0)
+  rows = [padded_stack(all_images[i * num_cols:(i + 1) * num_cols], padding_px,
+                       1, value=value) for i in range(num_rows)]
+  return padded_stack(rows, padding_px, axis=0, value=value)
 
 
-def padded_stack(images, padding_px=10, axis=0):
+def padded_stack(images, padding_px=10, axis=0, value=None):
   """Stacks images along axis with padding in between images."""
-  padding_arr = padding_array(images[0], padding_px, axis)
+  padding_arr = padding_array(images[0], padding_px, axis, value=value)
   new_images = [images[0]]
   for image in images[1:]:
     new_images.append(padding_arr)
@@ -94,11 +92,16 @@ def padded_stack(images, padding_px=10, axis=0):
   return np.concatenate(new_images, axis=axis)
 
 
-def padding_array(image, padding_px, axis):
+def padding_array(image, padding_px, axis, value=None):
   """Creates padding image of proper shape to pad image along the axis."""
   shape = list(image.shape)
   shape[axis] = padding_px
-  return np.ones(shape, dtype=image.dtype)
+  if value is None:
+    return np.ones(shape, dtype=image.dtype)
+  else:
+    assert len(value) == shape[-1]
+    shape[-1] = 1
+    return np.tile(value, shape)
 
 
 def best_num_rows(num_elements, max_ratio=4):
@@ -118,17 +121,17 @@ def best_num_rows(num_elements, max_ratio=4):
     i -= 1
 
 
-def pad_around(image, padding_px=10, axis=None):
+def pad_around(image, padding_px=10, axis=None, value=None):
   """Adds a padding around each image."""
   # If axis is None, pad both the first and the second axis.
   if axis is None:
-    image = pad_around(image, padding_px, axis=0)
+    image = pad_around(image, padding_px, axis=0, value=value)
     axis = 1
-  padding_arr = padding_array(image, padding_px, axis)
+  padding_arr = padding_array(image, padding_px, axis, value=value)
   return np.concatenate([padding_arr, image, padding_arr], axis=axis)
 
 
-def add_below(image, padding_px=10):
+def add_below(image, padding_px=10, value=None):
   """Adds a footer below."""
   if len(image.shape) == 2:
     image = np.expand_dims(image, -1)
@@ -142,9 +145,9 @@ def add_below(image, padding_px=10):
   if missing_px < 0:
     return image
   if missing_px > 0:
-    padding_arr = padding_array(footer, missing_px, axis=1)
+    padding_arr = padding_array(footer, missing_px, axis=1, value=value)
     footer = np.concatenate([padding_arr, footer], axis=1)
-  return padded_stack([image, footer], padding_px, axis=0)
+  return padded_stack([image, footer], padding_px, axis=0, value=value)
 
 
 def save_animation(list_of_animated_images, image_path, fps):

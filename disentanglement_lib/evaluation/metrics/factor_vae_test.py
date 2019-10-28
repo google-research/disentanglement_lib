@@ -30,8 +30,8 @@ class FactorVaeTest(absltest.TestCase):
     representation_function = lambda x: x
     random_state = np.random.RandomState(0)
     scores = factor_vae.compute_factor_vae(
-        ground_truth_data, representation_function, random_state, 5, 3000, 2000,
-        2500)
+        ground_truth_data, representation_function, random_state, None, 5, 3000,
+        2000, 2500)
     self.assertBetween(scores["train_accuracy"], 0.9, 1.0)
     self.assertBetween(scores["eval_accuracy"], 0.9, 1.0)
 
@@ -40,8 +40,8 @@ class FactorVaeTest(absltest.TestCase):
     representation_function = np.zeros_like
     random_state = np.random.RandomState(0)
     scores = factor_vae.compute_factor_vae(
-        ground_truth_data, representation_function, random_state, 5, 3000, 2000,
-        2500)
+        ground_truth_data, representation_function, random_state, None, 5, 3000,
+        2000, 2500)
     self.assertBetween(scores["train_accuracy"], 0.0, 0.2)
     self.assertBetween(scores["eval_accuracy"], 0.0, 0.2)
 

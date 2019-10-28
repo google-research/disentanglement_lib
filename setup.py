@@ -20,7 +20,7 @@ from setuptools import setup
 
 setup(
     name='disentanglement_lib',
-    version='1.2',
+    version='1.3',
     description=('Library for research on disentangled representations.'),
     author='DisentanglementLib Authors',
     author_email='no-reply@google.com',
@@ -31,6 +31,7 @@ setup(
     scripts=[
         'bin/dlib_aggregate_results',
         'bin/dlib_reproduce',
+        'bin/dlib_reason',
         'bin/dlib_visualize_dataset',
         'bin/dlib_evaluate',
         'bin/dlib_postprocess',
@@ -54,11 +55,11 @@ setup(
         'pandas>=0.23.0',
         'scipy>=1.0.0',
         'tensorflow_hub>=0.2',
-        'tensorflow_probability',
+        'tensorflow_probability==0.7',
     ],
     extras_require={
-        'tf': ['tensorflow>=1.7'],
-        'tf_gpu': ['tensorflow-gpu>=1.4.1'],
+        'tf': ['tensorflow==1.14'],
+        'tf_gpu': ['tensorflow-gpu==1.14'],
     },
     classifiers=[
         'Development Status :: 4 - Beta',

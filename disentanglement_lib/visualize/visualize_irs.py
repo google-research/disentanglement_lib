@@ -89,7 +89,7 @@ def _visualize_interventional_effect(gen_factors,
   g_is = np.unique(gen_factors[:, const_factor_idx], axis=0)
   g_js = np.unique(gen_factors[:, intervened_factor_idx], axis=0)
 
-  colors = 10 * ["b", "y", "g", "r", "c", "m", "k"]
+  colors = ["b", "y", "g", "r", "c", "m", "k"]
   cols_idx = np.empty([gen_factors.shape[0]], dtype=int)
   for i_idx in range(g_is.shape[0]):
     match = (gen_factors[:, [const_factor_idx]] == [g_is[i_idx]]).all(axis=1)
@@ -131,7 +131,7 @@ def _visualize_interventional_effect(gen_factors,
           g_js,
           e_given_i_for_j[i_idx, :],
           "go--",
-          c=colors[i_idx],
+          c=colors[i_idx % len(colors)],
           label="g_{}=={}".format(const_factor_idx, g_is[i_idx]),
           linewidth=1.5,
           markersize=3)

@@ -32,7 +32,8 @@ class BetaVaeTest(absltest.TestCase):
     representation_function = lambda x: x
     random_state = np.random.RandomState(0)
     scores = beta_vae.compute_beta_vae_sklearn(
-        ground_truth_data, representation_function, random_state, 5, 2000, 2000)
+        ground_truth_data, representation_function, random_state, None, 5,
+        2000, 2000)
     self.assertBetween(scores["train_accuracy"], 0.9, 1.0)
     self.assertBetween(scores["eval_accuracy"], 0.9, 1.0)
 

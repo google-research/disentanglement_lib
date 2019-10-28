@@ -31,10 +31,12 @@ import gin.tf
 
 @gin.configurable(
     "reduced_downstream_task",
-    blacklist=["ground_truth_data", "representation_function", "random_state"])
+    blacklist=["ground_truth_data", "representation_function", "random_state",
+               "artifact_dir"])
 def compute_reduced_downstream_task(ground_truth_data,
                                     representation_function,
                                     random_state,
+                                    artifact_dir=None,
                                     num_factors_to_remove=gin.REQUIRED,
                                     num_train=gin.REQUIRED,
                                     num_test=gin.REQUIRED,
@@ -49,6 +51,7 @@ def compute_reduced_downstream_task(ground_truth_data,
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    artifact_dir: Optional path to directory where artifacts can be saved.
     num_factors_to_remove: Number of factors to remove from the latent
       representation.
     num_train: Number of points used for training.
@@ -58,6 +61,7 @@ def compute_reduced_downstream_task(ground_truth_data,
   Returns:
     Dictionary with scores.
   """
+  del artifact_dir
   scores = {}
   # Loop on different sizes of the training 'batch', as specified with gin.
   for train_size in num_train:

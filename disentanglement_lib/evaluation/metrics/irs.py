@@ -29,10 +29,12 @@ import gin.tf
 
 @gin.configurable(
     "irs",
-    blacklist=["ground_truth_data", "representation_function", "random_state"])
+    blacklist=["ground_truth_data", "representation_function", "random_state",
+               "artifact_dir"])
 def compute_irs(ground_truth_data,
                 representation_function,
                 random_state,
+                artifact_dir=None,
                 diff_quantile=0.99,
                 num_train=gin.REQUIRED,
                 batch_size=gin.REQUIRED):
@@ -43,6 +45,7 @@ def compute_irs(ground_truth_data,
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    artifact_dir: Optional path to directory where artifacts can be saved.
     diff_quantile: Float value between 0 and 1 to decide what quantile of diffs
       to select (use 1.0 for the version in the paper).
     num_train: Number of points used for training.
@@ -51,6 +54,7 @@ def compute_irs(ground_truth_data,
   Returns:
     Dict with IRS and number of active dimensions.
   """
+  del artifact_dir
   logging.info("Generating training set.")
   mus, ys = utils.generate_batch_factor_code(ground_truth_data,
                                              representation_function, num_train,

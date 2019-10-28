@@ -23,10 +23,12 @@ import gin.tf
 
 @gin.configurable(
     "unsupervised_metrics",
-    blacklist=["ground_truth_data", "representation_function", "random_state"])
+    blacklist=["ground_truth_data", "representation_function", "random_state",
+               "artifact_dir"])
 def unsupervised_metrics(ground_truth_data,
                          representation_function,
                          random_state,
+                         artifact_dir=None,
                          num_train=gin.REQUIRED,
                          batch_size=16):
   """Computes unsupervised scores based on covariance and mutual information.
@@ -36,12 +38,14 @@ def unsupervised_metrics(ground_truth_data,
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    artifact_dir: Optional path to directory where artifacts can be saved.
     num_train: Number of points used for training.
     batch_size: Batch size for sampling.
 
   Returns:
     Dictionary with scores.
   """
+  del artifact_dir
   scores = {}
   logging.info("Generating training set.")
   mus_train, _ = utils.generate_batch_factor_code(

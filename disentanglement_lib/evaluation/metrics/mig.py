@@ -26,10 +26,12 @@ import gin.tf
 
 @gin.configurable(
     "mig",
-    blacklist=["ground_truth_data", "representation_function", "random_state"])
+    blacklist=["ground_truth_data", "representation_function", "random_state",
+               "artifact_dir"])
 def compute_mig(ground_truth_data,
                 representation_function,
                 random_state,
+                artifact_dir=None,
                 num_train=gin.REQUIRED,
                 batch_size=16):
   """Computes the mutual information gap.
@@ -39,12 +41,14 @@ def compute_mig(ground_truth_data,
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    artifact_dir: Optional path to directory where artifacts can be saved.
     num_train: Number of points used for training.
     batch_size: Batch size for sampling.
 
   Returns:
     Dict with average mutual information gap.
   """
+  del artifact_dir
   logging.info("Generating training set.")
   mus_train, ys_train = utils.generate_batch_factor_code(
       ground_truth_data, representation_function, num_train,

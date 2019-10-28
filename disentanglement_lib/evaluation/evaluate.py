@@ -17,19 +17,24 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+import inspect
 import os
 import time
+import warnings
 from disentanglement_lib.data.ground_truth import named_data
 from disentanglement_lib.evaluation.metrics import beta_vae  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import dci  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import downstream_task  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import factor_vae  # pylint: disable=unused-import
+from disentanglement_lib.evaluation.metrics import fairness  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import irs  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import mig  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import modularity_explicitness  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import reduced_downstream_task  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import sap_score  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import unsupervised_metrics  # pylint: disable=unused-import
+
+
 from disentanglement_lib.utils import results
 import numpy as np
 import tensorflow as tf
@@ -121,10 +126,23 @@ def evaluate(model_dir,
       return np.array(output["default"])
 
     # Computes scores of the representation based on the evaluation_fn.
-    results_dict = evaluation_fn(
-        dataset,
-        _representation_function,
-        random_state=np.random.RandomState(random_seed))
+    if _has_kwarg_or_kwargs(evaluation_fn, "artifact_dir"):
+      artifact_dir = os.path.join(model_dir, "artifacts")
+      results_dict = evaluation_fn(
+          dataset,
+          _representation_function,
+          random_state=np.random.RandomState(random_seed),
+          artifact_dir=artifact_dir)
+    else:
+      # Legacy code path to allow for old evaluation metrics.
+      warnings.warn(
+          "Evaluation function does not appear to accept an"
+          " `artifact_dir` argument. This may not be compatible with "
+          "future versions.", DeprecationWarning)
+      results_dict = evaluation_fn(
+          dataset,
+          _representation_function,
+          random_state=np.random.RandomState(random_seed))
 
   # Save the results (and all previous results in the pipeline) on disk.
   original_results_dir = os.path.join(model_dir, "results")
@@ -132,3 +150,14 @@ def evaluate(model_dir,
   results_dict["elapsed_time"] = time.time() - experiment_timer
   results.update_result_directory(results_dir, "evaluation", results_dict,
                                   original_results_dir)
+
+
+def _has_kwarg_or_kwargs(f, kwarg):
+  """Checks if the function has the provided kwarg or **kwargs."""
+  # For gin wrapped functions, we need to consider the wrapped function.
+  if hasattr(f, "__wrapped__"):
+    f = f.__wrapped__
+  args, _, kwargs, _ = inspect.getargspec(f)
+  if kwarg in args or kwargs is not None:
+    return True
+  return False

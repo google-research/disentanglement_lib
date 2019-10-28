@@ -14,7 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Pipeline to reproduce fixed models and evaluation protocols."""
+"""Pipeline to reproduce fixed models and evaluation protocols.
+
+This is the main pipeline for the reasoning step in the paper:
+Are Disentangled Representations Helpful for Abstract Visual Reasoning?
+Sjoerd van Steenkiste, Francesco Locatello, Juergen Schmidhuber, Olivier Bachem.
+NeurIPS, 2019.
+https://arxiv.org/abs/1905.12506
+"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

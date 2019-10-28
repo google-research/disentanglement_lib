@@ -32,8 +32,10 @@ import gin.tf
 
 @gin.configurable(
     "dci",
-    blacklist=["ground_truth_data", "representation_function", "random_state"])
+    blacklist=["ground_truth_data", "representation_function", "random_state",
+               "artifact_dir"])
 def compute_dci(ground_truth_data, representation_function, random_state,
+                artifact_dir=None,
                 num_train=gin.REQUIRED,
                 num_test=gin.REQUIRED,
                 batch_size=16):
@@ -44,6 +46,7 @@ def compute_dci(ground_truth_data, representation_function, random_state,
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    artifact_dir: Optional path to directory where artifacts can be saved.
     num_train: Number of points used for training.
     num_test: Number of points used for testing.
     batch_size: Batch size for sampling.
@@ -52,6 +55,7 @@ def compute_dci(ground_truth_data, representation_function, random_state,
     Dictionary with average disentanglement score, completeness and
       informativeness (train and test).
   """
+  del artifact_dir
   logging.info("Generating training set.")
   # mus_train are of shape [num_codes, num_train], while ys_train are of shape
   # [num_factors, num_train].
@@ -117,8 +121,8 @@ def disentanglement(importance_matrix):
   return np.sum(per_code*code_importance)
 
 
-def completeness_per_code(importance_matrix):
-  """Compute completeness of each code."""
+def completeness_per_factor(importance_matrix):
+  """Compute completeness of each factor."""
   # importance_matrix is of shape [num_codes, num_factors].
   return 1. - scipy.stats.entropy(importance_matrix + 1e-11,
                                   base=importance_matrix.shape[0])
@@ -126,7 +130,7 @@ def completeness_per_code(importance_matrix):
 
 def completeness(importance_matrix):
   """"Compute completeness of the representation."""
-  per_factor = completeness_per_code(importance_matrix)
+  per_factor = completeness_per_factor(importance_matrix)
   if importance_matrix.sum() == 0.:
     importance_matrix = np.ones_like(importance_matrix)
   factor_importance = importance_matrix.sum(axis=0) / importance_matrix.sum()

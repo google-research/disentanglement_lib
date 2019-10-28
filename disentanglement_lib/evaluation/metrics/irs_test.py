@@ -40,7 +40,7 @@ class IrsTest(absltest.TestCase):
     representation_function = lambda x: np.array(x, dtype=np.float64)
     random_state = np.random.RandomState(0)
     scores = irs.compute_irs(ground_truth_data, representation_function,
-                             random_state, 0.99, 3000, 3000)
+                             random_state, None, 0.99, 3000, 3000)
     self.assertBetween(scores["IRS"], 0.9, 1.0)
 
   def test_bad_metric(self):
@@ -51,7 +51,7 @@ class IrsTest(absltest.TestCase):
     representation_function = lambda x: np.zeros_like(x, dtype=np.float64)
     random_state = np.random.RandomState(0)
     scores = irs.compute_irs(ground_truth_data, representation_function,
-                             random_state, 0.99, 3000, 3000)
+                             random_state, None, 0.99, 3000, 3000)
     self.assertBetween(scores["IRS"], 0.0, 0.1)
 
   def test_drop_constant_dims(self):

@@ -74,7 +74,8 @@ class ModularityExplicitnessTest(absltest.TestCase):
     representation_function = lambda x: np.array(x, dtype=np.float64)
     random_state = np.random.RandomState(0)
     scores = modularity_explicitness.compute_modularity_explicitness(
-        ground_truth_data, representation_function, random_state, 3000, 3000)
+        ground_truth_data, representation_function, random_state, None, 3000,
+        3000)
     self.assertBetween(scores["modularity_score"], 0.9, 1.0)
 
   def test_bad_metric(self):
@@ -91,7 +92,8 @@ class ModularityExplicitnessTest(absltest.TestCase):
       return code
     random_state = np.random.RandomState(0)
     scores = modularity_explicitness.compute_modularity_explicitness(
-        ground_truth_data, representation_function, random_state, 20000, 20000)
+        ground_truth_data, representation_function, random_state, None, 20000,
+        20000)
     self.assertBetween(scores["modularity_score"], 0.0, 0.2)
 
   def test_duplicated_latent_space(self):
@@ -103,7 +105,8 @@ class ModularityExplicitnessTest(absltest.TestCase):
       return np.hstack([x, x])
     random_state = np.random.RandomState(0)
     scores = modularity_explicitness.compute_modularity_explicitness(
-        ground_truth_data, representation_function, random_state, 3000, 3000)
+        ground_truth_data, representation_function, random_state, None, 3000,
+        3000)
     self.assertBetween(scores["modularity_score"], 0.9, 1.0)
 
 if __name__ == "__main__":

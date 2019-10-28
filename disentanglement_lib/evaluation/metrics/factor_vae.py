@@ -29,10 +29,12 @@ import gin.tf
 
 @gin.configurable(
     "factor_vae_score",
-    blacklist=["ground_truth_data", "representation_function", "random_state"])
+    blacklist=["ground_truth_data", "representation_function", "random_state",
+               "artifact_dir"])
 def compute_factor_vae(ground_truth_data,
                        representation_function,
                        random_state,
+                       artifact_dir=None,
                        batch_size=gin.REQUIRED,
                        num_train=gin.REQUIRED,
                        num_eval=gin.REQUIRED,
@@ -44,6 +46,7 @@ def compute_factor_vae(ground_truth_data,
     representation_function: Function that takes observations as input and
       outputs a dim_representation sized representation for each observation.
     random_state: Numpy random state used for randomness.
+    artifact_dir: Optional path to directory where artifacts can be saved.
     batch_size: Number of points to be used to compute the training_sample.
     num_train: Number of points used for training.
     num_eval: Number of points used for evaluation.
@@ -54,6 +57,7 @@ def compute_factor_vae(ground_truth_data,
       train_accuracy: Accuracy on training set.
       eval_accuracy: Accuracy on evaluation set.
   """
+  del artifact_dir
   logging.info("Computing global variances to standardise.")
   global_variances = _compute_variances(ground_truth_data,
                                         representation_function,
