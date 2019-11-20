@@ -38,6 +38,8 @@ python -m disentanglement_lib.evaluation.metrics.dci_test
 python -m disentanglement_lib.evaluation.metrics.sap_score_test
 python -m disentanglement_lib.evaluation.metrics.utils_test
 python -m disentanglement_lib.evaluation.metrics.unsupervised_metrics_test
+python -m disentanglement_lib.evaluation.udr.evaluate_test
+python -m disentanglement_lib.evaluation.udr.metrics.udr_test
 python -m disentanglement_lib.visualize.visualize_util_test
 python -m disentanglement_lib.visualize.visualize_dataset_test
 python -m disentanglement_lib.visualize.visualize_model_test

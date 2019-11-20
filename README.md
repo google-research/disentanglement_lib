@@ -5,7 +5,7 @@
 It supports a variety of different models, metrics and data sets:
 
 * *Models*: BetaVAE, FactorVAE, BetaTCVAE, DIP-VAE
-* *Metrics*: BetaVAE score, FactorVAE score, Mutual Information Gap, SAP score, DCI, MCE, IRS
+* *Metrics*: BetaVAE score, FactorVAE score, Mutual Information Gap, SAP score, DCI, MCE, IRS, UDR
 * *Data sets*: dSprites, Color/Noisy/Scream-dSprites, SmallNORB, Cars3D, and Shapes3D
 * It also includes 10'800 pretrained disentanglement models (see below for details).
 
@@ -261,6 +261,25 @@ If you only want to reevaluate an already trained model using the evaluation pro
 ```
 dlib_reproduce --model_dir=<model_output_directory> --output_directory=<output> --study=fairness_study_v1
 ```
+
+## UDR experiments
+
+The library also includes the code for the Unsupervised Disentanglement Ranking (UDR) method proposed in the following paper in `disentanglement_lib/bin/dlib_udr`:
+> [**Unsupervised Model Selection for Variational Disentangled Representation Learning**](https://arxiv.org/abs/1905.12614)
+> *Sunny Duan, Loic Matthey, Andre Saraiva, Nicholas Watters, Christopher P. Burgess, Alexander Lerchner, Irina Higgins*.
+
+UDR can be applied to newly trained models (e.g. obtained by running
+`dlib_reproduce`) or to the existing pretrained models. After the models have
+been trained, their UDR scores can be computed by running:
+
+```
+dlib_udr --model_dirs=<model_output_directory1>,<model_output_directory2> \
+  --output_directory=<output>
+```
+
+The scores will be exported to `<output>/results/aggregate/evaluation.json`
+under the model_scores attribute. The scores will be presented in the order of
+the input model directories.
 
 ## Feedback
 Please send any feedback to bachem@google.com and francesco.locatello@tuebingen.mpg.de.

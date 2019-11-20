@@ -20,7 +20,7 @@ from setuptools import setup
 
 setup(
     name='disentanglement_lib',
-    version='1.3',
+    version='1.4',
     description=('Library for research on disentangled representations.'),
     author='DisentanglementLib Authors',
     author_email='no-reply@google.com',
@@ -34,6 +34,7 @@ setup(
         'bin/dlib_reason',
         'bin/dlib_visualize_dataset',
         'bin/dlib_evaluate',
+        'bin/dlib_udr',
         'bin/dlib_postprocess',
         'bin/dlib_train',
         'bin/dlib_visualize_dataset',
