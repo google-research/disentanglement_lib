@@ -17,10 +17,12 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+
 import inspect
 import os
 import time
 import warnings
+
 from disentanglement_lib.data.ground_truth import named_data
 from disentanglement_lib.evaluation.metrics import beta_vae  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import dci  # pylint: disable=unused-import
@@ -32,13 +34,14 @@ from disentanglement_lib.evaluation.metrics import mig  # pylint: disable=unused
 from disentanglement_lib.evaluation.metrics import modularity_explicitness  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import reduced_downstream_task  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import sap_score  # pylint: disable=unused-import
+from disentanglement_lib.evaluation.metrics import strong_downstream_task  # pylint: disable=unused-import
+from disentanglement_lib.evaluation.metrics import unified_scores  # pylint: disable=unused-import
 from disentanglement_lib.evaluation.metrics import unsupervised_metrics  # pylint: disable=unused-import
-
-
 from disentanglement_lib.utils import results
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import tensorflow_hub as hub
+
 import gin.tf
 
 
@@ -89,10 +92,6 @@ def evaluate(model_dir,
     random_seed: Integer with random seed used for training.
     name: Optional string with name of the metric (can be used to name metrics).
   """
-  # We do not use the variable 'name'. Instead, it can be used to name scores
-  # as it will be part of the saved gin config.
-  del name
-
   # Delete the output directory if it already exists.
   if tf.gfile.IsDirectory(output_dir):
     if overwrite:
@@ -127,7 +126,7 @@ def evaluate(model_dir,
 
     # Computes scores of the representation based on the evaluation_fn.
     if _has_kwarg_or_kwargs(evaluation_fn, "artifact_dir"):
-      artifact_dir = os.path.join(model_dir, "artifacts")
+      artifact_dir = os.path.join(model_dir, "artifacts", name)
       results_dict = evaluation_fn(
           dataset,
           _representation_function,
@@ -157,7 +156,7 @@ def _has_kwarg_or_kwargs(f, kwarg):
   # For gin wrapped functions, we need to consider the wrapped function.
   if hasattr(f, "__wrapped__"):
     f = f.__wrapped__
-  args, _, kwargs, _ = inspect.getargspec(f)
+  (args, _, kwargs, _, _, _, _) = inspect.getfullargspec(f)
   if kwarg in args or kwargs is not None:
     return True
   return False

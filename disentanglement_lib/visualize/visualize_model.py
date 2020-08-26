@@ -26,8 +26,8 @@ from disentanglement_lib.visualize.visualize_irs import vis_all_interventional_e
 import numpy as np
 from scipy import stats
 from six.moves import range
-import tensorflow as tf
-from tensorflow import gfile
+import tensorflow.compat.v1 as tf
+from tensorflow.compat.v1 import gfile
 import tensorflow_hub as hub
 import gin.tf
 

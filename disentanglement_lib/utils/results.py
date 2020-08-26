@@ -24,8 +24,8 @@ import uuid
 from distutils import dir_util
 import numpy as np
 import simplejson as json
-import tensorflow as tf
-from tensorflow import gfile
+import tensorflow.compat.v1 as tf
+from tensorflow.compat.v1 import gfile
 import gin.tf
 
 

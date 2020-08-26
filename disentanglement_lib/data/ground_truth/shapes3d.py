@@ -22,7 +22,7 @@ from disentanglement_lib.data.ground_truth import ground_truth_data
 from disentanglement_lib.data.ground_truth import util
 import numpy as np
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 SHAPES3D_PATH = os.path.join(
@@ -76,6 +76,7 @@ class Shapes3D(ground_truth_data.GroundTruthData):
   @property
   def observation_shape(self):
     return [64, 64, 3]
+
 
   def sample_factors(self, num, random_state):
     """Sample a batch of factors Y."""

@@ -20,7 +20,7 @@ from __future__ import print_function
 import os
 from disentanglement_lib.utils import convolute_hub
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import tensorflow_hub as hub
 
 

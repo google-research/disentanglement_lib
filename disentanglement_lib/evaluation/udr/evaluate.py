@@ -32,7 +32,7 @@ from disentanglement_lib.data.ground_truth import named_data
 from disentanglement_lib.evaluation.udr.metrics import udr  # pylint: disable=unused-import
 from disentanglement_lib.utils import results
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import tensorflow_hub as hub
 import gin.tf
 

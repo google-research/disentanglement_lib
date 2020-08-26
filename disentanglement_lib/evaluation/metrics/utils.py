@@ -20,9 +20,9 @@ from __future__ import print_function
 import numpy as np
 from six.moves import range
 import sklearn
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.linear_model import LogisticRegressionCV
-from sklearn.model_selection import KFold
+from sklearn import ensemble
+from sklearn import linear_model
+from sklearn import model_selection
 import gin.tf
 
 
@@ -167,10 +167,11 @@ def make_predictor_fn(predictor_fn=gin.REQUIRED):
 @gin.configurable("logistic_regression_cv")
 def logistic_regression_cv():
   """Logistic regression with 5 folds cross validation."""
-  return LogisticRegressionCV(Cs=10, cv=KFold(n_splits=5))
+  return linear_model.LogisticRegressionCV(Cs=10,
+                                           cv=model_selection.KFold(n_splits=5))
 
 
 @gin.configurable("gradient_boosting_classifier")
 def gradient_boosting_classifier():
   """Default gradient boosting classifier."""
-  return GradientBoostingClassifier()
+  return ensemble.GradientBoostingClassifier()

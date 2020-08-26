@@ -25,9 +25,10 @@ from disentanglement_lib.methods.unsupervised import gaussian_encoder_model
 from disentanglement_lib.methods.unsupervised import vae  # pylint: disable=unused-import
 from disentanglement_lib.utils import results
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import gin.tf.external_configurables  # pylint: disable=unused-import
 import gin.tf
+from tensorflow.contrib import tpu as contrib_tpu
 
 
 def train_with_gin(model_dir,
@@ -102,11 +103,11 @@ def train(model_dir,
   # We create a TPUEstimator based on the provided model. This is primarily so
   # that we could switch to TPU training in the future. For now, we train
   # locally on GPUs.
-  run_config = tf.contrib.tpu.RunConfig(
+  run_config = contrib_tpu.RunConfig(
       tf_random_seed=random_seed,
       keep_checkpoint_max=1,
-      tpu_config=tf.contrib.tpu.TPUConfig(iterations_per_loop=500))
-  tpu_estimator = tf.contrib.tpu.TPUEstimator(
+      tpu_config=contrib_tpu.TPUConfig(iterations_per_loop=500))
+  tpu_estimator = contrib_tpu.TPUEstimator(
       use_tpu=False,
       model_fn=model.model_fn,
       model_dir=os.path.join(model_dir, "tf_checkpoint"),

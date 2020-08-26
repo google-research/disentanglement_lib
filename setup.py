@@ -20,7 +20,7 @@ from setuptools import setup
 
 setup(
     name='disentanglement_lib',
-    version='1.4',
+    version='1.5',
     description=('Library for research on disentangled representations.'),
     author='DisentanglementLib Authors',
     author_email='no-reply@google.com',
@@ -41,6 +41,11 @@ setup(
         'bin/dlib_visualize_model',
         'bin/dlib_tests',
         'bin/dlib_download_data',
+        'bin/dlib_reproduce_jmlr',
+        'bin/dlib_reproduce_semi_supervised',
+        'bin/dlib_reproduce_weakly_supervised',
+        'bin/dlib_train_semi_supervised',
+        'bin/dlib_train_weakly_supervised',
     ],
     install_requires=[
         'future',
@@ -57,6 +62,7 @@ setup(
         'scipy>=1.0.0',
         'tensorflow_hub>=0.2',
         'tensorflow_probability==0.7',
+        'seaborn',
     ],
     extras_require={
         'tf': ['tensorflow==1.14'],

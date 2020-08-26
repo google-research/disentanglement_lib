@@ -21,7 +21,7 @@ from __future__ import print_function
 
 from disentanglement_lib.evaluation.abstract_reasoning import relational_layers
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def _create_positional_encoding_matrices():

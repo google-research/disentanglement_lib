@@ -20,7 +20,7 @@ from __future__ import print_function
 from absl.testing import parameterized
 from disentanglement_lib.methods.shared import architectures
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 class ArchitecturesTest(parameterized.TestCase, tf.test.TestCase):

@@ -24,9 +24,9 @@ from __future__ import print_function
 from disentanglement_lib.evaluation.metrics import utils
 import numpy as np
 from six.moves import range
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn import linear_model
+from sklearn import metrics
+from sklearn import preprocessing
 import gin.tf
 
 
@@ -101,14 +101,14 @@ def explicitness_per_factor(mus_train, y_train, mus_test, y_test):
   """
   x_train = np.transpose(mus_train)
   x_test = np.transpose(mus_test)
-  clf = LogisticRegression().fit(x_train, y_train)
+  clf = linear_model.LogisticRegression().fit(x_train, y_train)
   y_pred_train = clf.predict_proba(x_train)
   y_pred_test = clf.predict_proba(x_test)
-  mlb = MultiLabelBinarizer()
-  roc_train = roc_auc_score(mlb.fit_transform(np.expand_dims(y_train, 1)),
-                            y_pred_train)
-  roc_test = roc_auc_score(mlb.fit_transform(np.expand_dims(y_test, 1)),
-                           y_pred_test)
+  mlb = preprocessing.MultiLabelBinarizer()
+  roc_train = metrics.roc_auc_score(
+      mlb.fit_transform(np.expand_dims(y_train, 1)), y_pred_train)
+  roc_test = metrics.roc_auc_score(
+      mlb.fit_transform(np.expand_dims(y_test, 1)), y_pred_test)
   return roc_train, roc_test
 
 

@@ -24,8 +24,8 @@ import numpy as np
 import PIL
 import scipy.io as sio
 from six.moves import range
-from sklearn.utils.extmath import cartesian
-from tensorflow import gfile
+from sklearn.utils import extmath
+from tensorflow.compat.v1 import gfile
 
 
 CARS3D_PATH = os.path.join(
@@ -48,7 +48,8 @@ class Cars3D(ground_truth_data.GroundTruthData):
 
   def __init__(self):
     self.factor_sizes = [4, 24, 183]
-    features = cartesian([np.array(list(range(i))) for i in self.factor_sizes])
+    features = extmath.cartesian(
+        [np.array(list(range(i))) for i in self.factor_sizes])
     self.latent_factor_indices = [0, 1, 2]
     self.num_total_factors = features.shape[1]
     self.index = util.StateSpaceAtomIndex(self.factor_sizes, features)
@@ -64,6 +65,7 @@ class Cars3D(ground_truth_data.GroundTruthData):
   @property
   def factors_num_values(self):
     return self.factor_sizes
+
 
   @property
   def observation_shape(self):

@@ -22,7 +22,7 @@ from disentanglement_lib.data.ground_truth import named_data
 from disentanglement_lib.visualize import visualize_util
 import numpy as np
 from six.moves import range
-from tensorflow import gfile
+from tensorflow.compat.v1 import gfile
 
 
 def visualize_dataset(dataset_name, output_path, num_animations=5,

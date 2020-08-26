@@ -17,6 +17,6 @@ evaluation.evaluation_fn = @factor_vae_score
 dataset.name="dummy_data"
 evaluation.random_seed = 0
 factor_vae_score.num_variance_estimate=100
-factor_vae_score.num_train=100
+factor_vae_score.num_train=1000
 factor_vae_score.num_eval=100
 factor_vae_score.batch_size=5

@@ -28,8 +28,9 @@ from disentanglement_lib.methods.shared import optimizers  # pylint: disable=unu
 from disentanglement_lib.methods.unsupervised import gaussian_encoder_model
 from six.moves import range
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import gin.tf
+from tensorflow.contrib import tpu as contrib_tpu
 
 
 class BaseVAE(gaussian_encoder_model.GaussianEncoderModel):
@@ -64,13 +65,13 @@ class BaseVAE(gaussian_encoder_model.GaussianEncoderModel):
           "elbo": -elbo
       },
                                                 every_n_iter=100)
-      return tf.contrib.tpu.TPUEstimatorSpec(
+      return contrib_tpu.TPUEstimatorSpec(
           mode=mode,
           loss=loss,
           train_op=train_op,
           training_hooks=[logging_hook])
     elif mode == tf.estimator.ModeKeys.EVAL:
-      return tf.contrib.tpu.TPUEstimatorSpec(
+      return contrib_tpu.TPUEstimatorSpec(
           mode=mode,
           loss=loss,
           eval_metrics=(make_metric_fn("reconstruction_loss", "elbo",
@@ -266,13 +267,13 @@ class FactorVAE(BaseVAE):
           "reconstruction_loss": reconstruction_loss
       },
                                                 every_n_iter=50)
-      return tf.contrib.tpu.TPUEstimatorSpec(
+      return contrib_tpu.TPUEstimatorSpec(
           mode=mode,
           loss=factor_vae_loss,
           train_op=train_op,
           training_hooks=[logging_hook])
     elif mode == tf.estimator.ModeKeys.EVAL:
-      return tf.contrib.tpu.TPUEstimatorSpec(
+      return contrib_tpu.TPUEstimatorSpec(
           mode=mode,
           loss=factor_vae_loss,
           eval_metrics=(make_metric_fn("reconstruction_loss", "regularizer",

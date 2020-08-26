@@ -24,7 +24,7 @@ import numpy as np
 import PIL
 from six.moves import range
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 SMALLNORB_TEMPLATE = os.path.join(
@@ -74,6 +74,7 @@ class SmallNORB(ground_truth_data.GroundTruthData):
   @property
   def observation_shape(self):
     return [64, 64, 1]
+
 
   def sample_factors(self, num, random_state):
     """Sample a batch of factors Y."""

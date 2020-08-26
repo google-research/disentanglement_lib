@@ -83,6 +83,41 @@ def _compute_sap(mus, ys, mus_test, ys_test, continuous_factors):
   return scores_dict
 
 
+@gin.configurable(
+    "sap_score_validation",
+    blacklist=["observations", "labels", "representation_function"])
+def compute_sap_on_fixed_data(observations, labels, representation_function,
+                              train_percentage=gin.REQUIRED,
+                              continuous_factors=gin.REQUIRED,
+                              batch_size=100):
+  """Computes the SAP score on the fixed set of observations and labels.
+
+  Args:
+    observations: Observations on which to compute the score. Observations have
+      shape (num_observations, 64, 64, num_channels).
+    labels: Observed factors of variations.
+    representation_function: Function that takes observations as input and
+      outputs a dim_representation sized representation for each observation.
+    train_percentage: Percentage of observations used for training.
+    continuous_factors: Whether factors should be considered continuous or
+      discrete.
+    batch_size: Batch size used to compute the representation.
+
+  Returns:
+    SAP computed on the provided observations and labels.
+  """
+  mus = utils.obtain_representation(observations, representation_function,
+                                    batch_size)
+  assert labels.shape[1] == observations.shape[0], "Wrong labels shape."
+  assert mus.shape[1] == observations.shape[0], "Wrong representation shape."
+  mus_train, mus_test = utils.split_train_test(
+      mus,
+      train_percentage)
+  ys_train, ys_test = utils.split_train_test(
+      labels,
+      train_percentage)
+  return _compute_sap(mus_train, ys_train, mus_test, ys_test,
+                      continuous_factors)
 
 
 def compute_score_matrix(mus, ys, mus_test, ys_test, continuous_factors):

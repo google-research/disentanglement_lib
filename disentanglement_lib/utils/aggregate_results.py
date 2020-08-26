@@ -21,7 +21,7 @@ import multiprocessing
 from absl import logging
 import pandas as pd
 import simplejson as json
-from tensorflow import gfile
+from tensorflow.compat.v1 import gfile
 
 
 def aggregate_results_to_json(result_file_pattern, output_path):

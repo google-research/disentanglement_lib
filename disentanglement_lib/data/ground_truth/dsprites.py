@@ -23,7 +23,7 @@ from disentanglement_lib.data.ground_truth import util
 import numpy as np
 import PIL
 from six.moves import range
-from tensorflow import gfile
+from tensorflow.compat.v1 import gfile
 
 DSPRITES_PATH = os.path.join(
     os.environ.get("DISENTANGLEMENT_LIB_DATA", "."), "dsprites",
@@ -79,6 +79,7 @@ class DSprites(ground_truth_data.GroundTruthData):
   @property
   def observation_shape(self):
     return self.data_shape
+
 
   def sample_factors(self, num, random_state):
     """Sample a batch of factors Y."""

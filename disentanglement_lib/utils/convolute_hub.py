@@ -17,8 +17,9 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import tensorflow_hub as hub
+from tensorflow.contrib import framework as contrib_framework
 
 
 def convolute_and_save(module_path, signature, export_path, transform_fn,
@@ -66,7 +67,7 @@ def convolute_and_save(module_path, signature, export_path, transform_fn,
         if k.startswith(prefix)
     }
     if transform_variables:
-      init_fn = tf.contrib.framework.assign_from_checkpoint_fn(
+      init_fn = contrib_framework.assign_from_checkpoint_fn(
           transform_checkpoint_path, transform_variables)
 
     with tf.Session() as sess:

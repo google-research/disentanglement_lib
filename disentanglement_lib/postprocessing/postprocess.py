@@ -24,7 +24,7 @@ from disentanglement_lib.postprocessing import methods  # pylint: disable=unused
 from disentanglement_lib.utils import convolute_hub
 from disentanglement_lib.utils import results
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import tensorflow_hub as hub
 
 import gin.tf

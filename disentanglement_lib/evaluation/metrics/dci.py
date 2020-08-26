@@ -26,7 +26,7 @@ from disentanglement_lib.evaluation.metrics import utils
 import numpy as np
 import scipy
 from six.moves import range
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn import ensemble
 import gin.tf
 
 
@@ -85,6 +85,36 @@ def _compute_dci(mus_train, ys_train, mus_test, ys_test):
   return scores
 
 
+@gin.configurable(
+    "dci_validation",
+    blacklist=["observations", "labels", "representation_function"])
+def compute_dci_on_fixed_data(observations, labels, representation_function,
+                              train_percentage=gin.REQUIRED, batch_size=100):
+  """Computes the DCI scores on the fixed set of observations and labels.
+
+  Args:
+    observations: Observations on which to compute the score. Observations have
+      shape (num_observations, 64, 64, num_channels).
+    labels: Observed factors of variations.
+    representation_function: Function that takes observations as input and
+      outputs a dim_representation sized representation for each observation.
+    train_percentage: Percentage of observations used for training.
+    batch_size: Batch size used to compute the representation.
+
+  Returns:
+    DCI score.
+  """
+  mus = utils.obtain_representation(observations, representation_function,
+                                    batch_size)
+  assert labels.shape[1] == observations.shape[0], "Wrong labels shape."
+  assert mus.shape[1] == observations.shape[0], "Wrong representation shape."
+  mus_train, mus_test = utils.split_train_test(
+      mus,
+      train_percentage)
+  ys_train, ys_test = utils.split_train_test(
+      labels,
+      train_percentage)
+  return _compute_dci(mus_train, ys_train, mus_test, ys_test)
 
 
 def compute_importance_gbt(x_train, y_train, x_test, y_test):
@@ -96,7 +126,7 @@ def compute_importance_gbt(x_train, y_train, x_test, y_test):
   train_loss = []
   test_loss = []
   for i in range(num_factors):
-    model = GradientBoostingClassifier()
+    model = ensemble.GradientBoostingClassifier()
     model.fit(x_train.T, y_train[i, :])
     importance_matrix[:, i] = np.abs(model.feature_importances_)
     train_loss.append(np.mean(model.predict(x_train.T) == y_train[i, :]))

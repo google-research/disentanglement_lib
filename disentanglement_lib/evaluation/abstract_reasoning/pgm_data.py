@@ -32,7 +32,7 @@ from disentanglement_lib.visualize import visualize_util
 import gin
 import numpy as np
 from PIL import Image
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 @gin.configurable("pgm")

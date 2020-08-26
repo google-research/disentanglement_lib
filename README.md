@@ -281,6 +281,40 @@ The scores will be exported to `<output>/results/aggregate/evaluation.json`
 under the model_scores attribute. The scores will be presented in the order of
 the input model directories.
 
+## Weakly-Supervised experiments
+The library also includes the code for the weakly-supervised disentanglement methods proposed in the following paper in `disentanglement_lib/bin/dlib_reproduce_weakly_supervised`:
+> [**Weakly-Supervised Disentanglement Without Compromises**](https://arxiv.org/abs/2002.02886)
+> *Francesco Locatello, Ben Poole, Gunnar Rätsch, Bernhard Schölkopf, Olivier Bachem, Michael Tschannen*.
+
+```
+dlib_reproduce_weakly_supervised --output_directory=<output> \
+   --gin_model_config_dir=<dir> \
+   --gin_model_config_name=<name> \
+   --gin_postprocess_config_glob=<postprocess_configs> \
+   --gin_evaluation_config_glob=<eval_configs> \
+   --pipeline_seed=<seed>
+```
+
+## Semi-Supervised experiments
+The library also includes the code for the semi-supervised disentanglement methods proposed in the following paper in `disentanglement_lib/bin/dlib_reproduce_semi_supervised`:
+> [**Disentangling Factors of Variation Using Few Labels**](https://arxiv.org/abs/1905.01258)
+> *Francesco Locatello, Michael Tschannen, Stefan Bauer, Gunnar Rätsch, Bernhard Schölkopf, Olivier Bachem*.
+
+```
+dlib_reproduce_weakly_supervised --output_directory=<output> \
+   --gin_model_config_dir=<dir> \
+   --gin_model_config_name=<name> \
+   --gin_postprocess_config_glob=<postprocess_configs> \
+   --gin_evaluation_config_glob=<eval_configs> \
+   --gin_validation_config_glob=<val_configs> \
+   --pipeline_seed=<seed> \
+   --eval_seed=<seed> \
+   --supervised_seed=<seed> \
+   --num_labelled_samples=<num> \
+   --train_percentage=0.9 \
+   --labeller_fn="@perfect_labeller"
+```
+
 ## Feedback
 Please send any feedback to bachem@google.com and francesco.locatello@tuebingen.mpg.de.
 

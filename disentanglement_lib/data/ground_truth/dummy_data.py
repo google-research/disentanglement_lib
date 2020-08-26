@@ -43,6 +43,10 @@ class IdentityObservationsData(ground_truth_data.GroundTruthData):
     """Sample a batch of observations X given a batch of factors Y."""
     return factors
 
+  @property
+  def factor_names(self):
+    return ["Factor {}".format(i) for i in range(self.num_factors)]
+
 
 class DummyData(ground_truth_data.GroundTruthData):
   """Dummy image data set of random noise used for testing."""
@@ -66,3 +70,4 @@ class DummyData(ground_truth_data.GroundTruthData):
   def sample_observations_from_factors(self, factors, random_state):
     """Sample a batch of observations X given a batch of factors Y."""
     return random_state.random_sample(size=(factors.shape[0], 64, 64, 1))
+

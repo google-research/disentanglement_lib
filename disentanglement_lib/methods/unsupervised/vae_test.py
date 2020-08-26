@@ -20,7 +20,7 @@ from __future__ import print_function
 from absl.testing import parameterized
 from disentanglement_lib.methods.unsupervised import vae
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import gin.tf.external_configurables  # pylint: disable=unused-import
 
 
